@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'PlantScribe'
+project = u'everest demo'
 # redefine copyright pylint: disable=W0622
 copyright = u'Copyright (c) 2011-2012 ' \
              'F. Oliver Gathmann, Cenix BioScience, Dresden, Germany '
@@ -186,8 +186,8 @@ htmlhelp_basename = 'plantscribedoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'plantscribe.tex', u'PlantScribe Documentation',
-   u'plantscribers', 'manual'),
+  ('index', 'everest_demo.tex', u'everest demo Documentation',
+   u'everestlers', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -219,6 +219,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', u'PlantScribe Documentation',
+    ('index', u'everest demo Documentation',
      [u'F. Oliver Gathmann'], 1)
 ]
