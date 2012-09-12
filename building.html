@@ -1,0 +1,344 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building everest applications &mdash; PlantScribe 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PlantScribe 0.1 documentation" href="index.html" />
+    <link rel="next" title="Using everest applications" href="using.html" />
+    <link rel="prev" title="everest Tutorial" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="using.html" title="Using everest applications"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="everest Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PlantScribe 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-everest-applications">
+<h1>Building <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> applications<a class="headerlink" href="#building-everest-applications" title="Permalink to this headline">¶</a></h1>
+<p>In this section, you will find a step-by-step guide on how to build a RESTful
+application with <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>.</p>
+<ol class="arabic simple">
+<li>The application</li>
+</ol>
+<p>Suppose you want to write a program that helps a garden designer with composing
+lists of beautiful perennials and shrubs that she intends to plant in her
+customer&#8217;s gardens. Let&#8217;s call this fancy application &#8220;Plant Scribe&#8221;. In its
+simplest possible form, this application will have to handle customers,
+projects (per customer), sites (per project), and plant species (per site).</p>
+<ol class="arabic simple" start="2">
+<li>Designing the entity model</li>
+</ol>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> applications keep their value state in <a class="reference internal" href="glossary.html#term-entity"><em class="xref std std-term">entity</em></a> objects.</p>
+<div class="sidebar">
+<p class="first sidebar-title">Entities and Resources</p>
+<p>The entity model implements the <a class="reference internal" href="glossary.html#term-domain-logic"><em class="xref std std-term">domain logic</em></a> of the application by
+enforcing all value state constraints at all times.</p>
+<p>Entities are manipulated through <a class="reference internal" href="glossary.html#term-resource"><em class="xref std std-term">resource</em></a> objects. A resource
+object provides access either to a single entity object
+(<a class="reference internal" href="glossary.html#term-member-resource"><em class="xref std std-term">member resource</em></a>) or to a collection of entities of the same kind
+(<a class="reference internal" href="glossary.html#term-collection-resource"><em class="xref std std-term">collection resource</em></a>). Resources can call other resources to modify
+other parts of the entity model, thus implementing the
+<a class="reference internal" href="glossary.html#term-business-logic"><em class="xref std std-term">business logic</em></a> of the application.</p>
+<p class="last">Each collection resource uses an <a class="reference internal" href="glossary.html#term-aggregate"><em class="xref std std-term">aggregate</em></a> to provide access to its
+underlying entities. They support slicing, filtering, and ordering
+operations.</p>
+</div>
+<p>The first step on our way to the Plant Scribe application is therefore to decide
+which data we want to store in our entity model. We start with the customer:</p>
+<p>In our example, the <tt class="xref py py-class docutils literal"><span class="pre">Customer</span></tt> class inherits from the <tt class="xref py py-class docutils literal"><span class="pre">Entity</span></tt>
+class provided by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>. This is convenient, but not necessary; any
+class can participate in the entity model as long as it implements the
+<tt class="xref py py-class docutils literal"><span class="pre">everest.entities.interfaces.IEntity</span></tt> interface. Note, however, that
+this interface requires the presence of a <tt class="docutils literal"><span class="pre">slug</span></tt> attribute, which in the case
+of the customer entity is composed of the concatenation of the customer&#8217;s last
+and first name.</p>
+<div class="sidebar">
+<p class="first sidebar-title">Slugs</p>
+<p class="last">A <a class="reference internal" href="glossary.html#term-slug"><em class="xref std std-term">slug</em></a> is a character string that uniquely identifies an entity
+within its aggregate. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses the slug as part of the URL for
+the member resource wrapping an entity, so, ideally, it should ideally be a
+short, mnemonic expression.</p>
+</div>
+<p>For each customer, we need to be able to handle an arbitrary number of projects:</p>
+<p>Note that the <tt class="docutils literal"><span class="pre">name</span></tt> attribute, which serves as the project entity slug, does
+not need to be unique among <em>all</em> projects, but just among all projects for a
+given customer.</p>
+<p>Another noteworthy observation is that although the project references the
+customer, we do not (yet) have a way to access the projects associated with a
+given customer as an attribute of its customer entity. Avoiding such circular
+references allows us to keep our entity model simple, but we may be missing the
+convenience they offer. We will return to this issue a little later.</p>
+<p>Each project is referenced by one or more planting sites:</p>
+<p>The plant species to choose from for each site are modeled as follows:</p>
+<p>Finally, the information about which plant species to use at which site and in
+which quantity is modeled as an &#8220;incidence&#8221; entity:</p>
+<ol class="arabic simple" start="3">
+<li>Designing and building the resource layer</li>
+</ol>
+<p>With the entity model in place, we can  now proceed to designing the resource
+layer. The first step here is to define the marker interfaces that
+<tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> will use to access the various parts of the resource system.
+This is very straightforward to do:</p>
+<p>Next, we move on to declaring the resource attributes using <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>&#8216;s
+resource attribute descriptors. Each resource attribute descriptor maps a
+single attribute from the resource&#8217;s entity and makes it available for access
+from the outside.</p>
+<div class="sidebar">
+<p class="first sidebar-title">Resource Attribute Kinds</p>
+<p class="last">There are three kinds of resource attributes in <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>: Terminal
+attributes, member attributes, and collection attributes. A <em>terminal</em>
+resource attribute references an object of an atomic type or some other type
+that is not a resource itself. A <em>member</em> resource attribute references
+another member resource and a <em>collection</em> resource attribute references
+another collection resource. Resource attributes are declared using the
+<tt class="xref py py-func docutils literal"><span class="pre">terminal_attribute()</span></tt>, <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt>, and
+<tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptor generating functions from the
+<tt class="xref py py-mod docutils literal"><span class="pre">resources.descriptors</span></tt> module.</p>
+</div>
+<p>In our example application, the resources mostly declare the public attributes
+of the underlying entities as attributes:</p>
+<p>In the simple case where the resource attribute descriptor declares a public
+attribute of the underlying entity, it expects a type or an interface of the
+target object and the name of the corresponding entity attribute as arguments.</p>
+<div class="sidebar">
+<p class="first sidebar-title">URL resolution</p>
+<p class="last"><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> favors and facilitates object traversal for URL resolution.
+In particular, all resource attributes that target a member or collection
+resource can be used directly for URL traversal unless they are specifically
+set as non-nested resource in the corresponding resource attribute
+declaration.</p>
+</div>
+<p>For <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptors there
+is also an optional argument <tt class="docutils literal"><span class="pre">is_nested</span></tt> which determines if the URL for the
+target resource is going to be formed relative to the root (i.e., as an
+absolute path) or relative to the parent resource declaring the attribute.</p>
+<p>We also have the possibility to declare resource attributes that do not
+reference the target resource directly through an entity attribute, but
+indirectly through a &#8220;backreferencing&#8221; attribute. In the example code, this is
+demonstrated in the <tt class="docutils literal"><span class="pre">projects</span></tt> attribute of the <tt class="xref py py-class docutils literal"><span class="pre">CustomerMember</span></tt>
+resource which allows us to access a customer&#8217;s projects at the resource level
+even though the underlying entity does not reference its projects directly.</p>
+<ol class="arabic simple" start="4">
+<li>Configuring the application</li>
+</ol>
+<p>With the resource layer in place, we can now move on to configuring our
+application. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> applications are based on the <tt class="xref py py-mod docutils literal"><span class="pre">pyramid</span></tt>
+framework and everything you learned about configuring <tt class="xref py py-mod docutils literal"><span class="pre">pyramid</span></tt>
+applications can be applied here. Rather than duplicating the excellent
+documentation available on the Pyramid web site, we will focus on a minimal
+example on how to configure the extra resource functionality that
+<tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> supplies.</p>
+<p>The minimal <tt class="docutils literal"><span class="pre">.ini</span></tt> file for the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application is quite simple:</p>
+<p>The only purpose of the <tt class="docutils literal"><span class="pre">.ini</span></tt> file is to specify a <tt class="docutils literal"><span class="pre">Paster</span></tt> application
+factory which is responsible for creating and setting up the application
+registry and for instantiating a WSGI application.</p>
+<p>The <tt class="docutils literal"><span class="pre">.zcml</span></tt> configuration file - which is loaded through the application
+factory - is more interesting:</p>
+<p>Note the <tt class="docutils literal"><span class="pre">include</span></tt> directive at the top of the file; this not only pulls in
+the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific ZCML directives, but also the Pyramid directives as
+well.</p>
+<p>The most important of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific directives is the <tt class="docutils literal"><span class="pre">resource</span></tt>
+directive. This sets up the connections between the various parts of the
+resource subsystem, using our marker interfaces as the glue. At the minimum,
+you need to specify</p>
+<ul class="simple">
+<li>A marker interface for your resource;</li>
+<li>An entity class for the resource;</li>
+<li>A member class class for the resource; and</li>
+<li>A name for the root collection.</li>
+</ul>
+<p>The aggregate and collection objects needed by the resource subsystem (cf. xxx)
+are created automatically; you may, however, supply a custom collection class
+that inherits from <tt class="xref py py-class docutils literal"><span class="pre">everest.resources.base.Collection</span></tt>. If you do not
+plan on exposing the collection for this resource to the outside, you can set
+the <tt class="docutils literal"><span class="pre">expose</span></tt> flag to <tt class="docutils literal"><span class="pre">false</span></tt>, in which case you do not need to provide a
+root collection name. Non-exposed resources will still be available as a root
+collection internally, but access through the service as well as the generation
+of absolute URLs will not work.</p>
+<ol class="arabic simple" start="5">
+<li>Running the application</li>
+</ol>
+<p>To see our little application in action, we can use the <tt class="docutils literal"><span class="pre">pshell</span></tt> interactive
+shell that comes with <tt class="docutils literal"><span class="pre">Pyramid</span></tt>. First, install the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> package
+by issuing</p>
+<div class="highlight-text"><div class="highlight"><pre>$ pip install -e .
+</pre></div>
+</div>
+<p>inside the <tt class="docutils literal"><span class="pre">docs/demoapp/v0</span></tt> folder of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> source tree. This
+presumes you have followed the instructions of installing <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> and
+use a <tt class="docutils literal"><span class="pre">virtualenv</span></tt> with the <tt class="docutils literal"><span class="pre">pip</span></tt> installer (cf. xxx).</p>
+<p>Now, still from the same directory, you start the <tt class="docutils literal"><span class="pre">Pyramid</span></tt> <tt class="docutils literal"><span class="pre">pshell</span></tt> like
+this:</p>
+<div class="highlight-text"><div class="highlight"><pre>$ pshell plantscribe.ini
+Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)
+[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+Type &quot;help&quot; for more information.
+
+Environment:
+  app          The WSGI application.
+  registry     Active Pyramid registry.
+  request      Active request object.
+  root         Root of the default resource tree.
+  root_factory Default root factory used to create `root`.
+
+&gt;&gt;&gt;
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">root</span></tt> object that is available in the <tt class="docutils literal"><span class="pre">pshell</span></tt> environment is the
+service object that provides access to all public root collections by name:</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt;&gt;&gt; c = root[&#39;customers&#39;]
+&gt;&gt;&gt; c
+&lt;CustomerMemberCollection name:customers parent:Service(started)&gt;
+</pre></div>
+</div>
+<p>We can now start adding members to the collection and retrieve them back from
+the collection:</p>
+<div class="highlight-text"><div class="highlight"><pre>&gt;&gt;&gt; from plantscribe.entities.customer import Customer
+&gt;&gt;&gt; ent = Customer(&#39;Peter&#39;, &#39;Fox&#39;)
+&gt;&gt;&gt; m = c.create_member(ent)
+&gt;&gt;&gt; m.__name__
+&#39;fox-peter&#39;
+&gt;&gt;&gt; c.get(&#39;fox-peter&#39;).__name__
+&#39;fox-peter&#39;
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li>Adding persistency</li>
+</ol>
+<p>With the application running, we now turn our attention to persistency.
+<tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses a <a class="reference internal" href="glossary.html#term-repository"><em class="xref std std-term">repository</em></a> to load and save resources from and to
+a storage backend. To use a filesystem-based repository as the default for our
+application, we could use the following ZCML declaration:</p>
+<div class="highlight-text"><div class="highlight"><pre>&lt;filesystem_repository
+   directory=&quot;data&quot;
+   content_type=&quot;everest.mime.CsvMime&quot;
+   make_default=&quot;true&quot; /&gt;
+</pre></div>
+</div>
+<p>This tells <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to use the <tt class="docutils literal"><span class="pre">data</span></tt> directory (relative to the
+<tt class="docutils literal"><span class="pre">plantscribe</span></tt> package) to persist representations of the root collections of
+all resources as <tt class="docutils literal"><span class="pre">.csv</span></tt> (Comma Separated Value) files. When the application
+is initialized, the root collections are loaded from these representation files
+and during each <tt class="docutils literal"><span class="pre">commit</span></tt> operation at the end of a transaction, all modified
+root collections are written back to their corresponding representation files.</p>
+<p>The filesystem-based repository does not perform well with complex or high
+volume data structures or in cases where several processes need to access the
+same persistency backend. In these situations, we need to switch to a an
+ORM-based repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses xxx <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> as ORM. What
+follows is a highly simplified account of what is needed to instruct
+<tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> application; for an
+explanation of the terms and concepts used in this section, please refer to the
+excellent documentation on the <cite>SQLAlchemy http://sqlalchemy.org</cite> web site.</p>
+<p>In a first step, we need to initialize the ORM. The following ZCML declaration
+makes the ORM the default resource repository:</p>
+<div class="highlight-text"><div class="highlight"><pre>&lt;orm_repository
+    metadata_factory=&quot;everest.tests.testapp_db.db.create_metadata&quot;
+    make_default=&quot;true&quot;/&gt;
+</pre></div>
+</div>
+<p>The metadata factory setting references a callable that takes an <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt>
+engine as a parameter and returns a fully initialized metadata instance. For
+our simple application, this function looks like this:</p>
+<p>The function first creates a database schema and then maps our entity classes to
+this schema. Note that a special mapper is used which provides a convenient way
+to map the special <cite>id</cite> and <cite>slug</cite> attributes required by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to the
+ORM layer.</p>
+<p>To use an engine other than the default in-memory SQLite database engine, you
+need to supply a <tt class="docutils literal"><span class="pre">db_string</span></tt> setting in the paster application <tt class="docutils literal"><span class="pre">.ini</span></tt> file.
+For example:</p>
+<p>Different resorces may use different repositories, but any given resource can
+only be assigned to one repository.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">everest</span></tt> Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="using.html"
+                        title="next chapter">Using <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/building.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="using.html" title="Using everest applications"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="everest Tutorial"
+             >previous</a> |</li>
+        <li><a href="index.html">PlantScribe 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Copyright (c) 2011-2012 F. Oliver Gathmann, Cenix BioScience, Dresden, Germany .
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

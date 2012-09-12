@@ -1,0 +1,298 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using everest applications &mdash; PlantScribe 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PlantScribe 0.1 documentation" href="index.html" />
+    <link rel="next" title="Glossary of Terms" href="glossary.html" />
+    <link rel="prev" title="Building everest applications" href="building.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="glossary.html" title="Glossary of Terms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building everest applications"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PlantScribe 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="using-everest-applications">
+<h1>Using <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> applications<a class="headerlink" href="#using-everest-applications" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="querying-with-get">
+<h2>Querying with GET<a class="headerlink" href="#querying-with-get" title="Permalink to this headline">¶</a></h2>
+<p>One of the main features of the collection resources in <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> are their
+advanced querying capabilities. Query strings have to conform to</p>
+<p>An incoming query through a GET request is processed by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> in two
+steps: First, the query string submitted by the client is parsed into a query
+specification; and second, this query specification is translated to an object
+that can be applied to the collection resource acting as the query context.</p>
+<div class="sidebar">
+<p class="first sidebar-title">Collection Query Language (CQL)</p>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> supports a custom Collection Query Language (CQL) for
+querying collection resources.</p>
+<p>CQL query expressions are composed of one or more query criteria separated
+by the tilde (&#8220;~&#8221;) character. Each criterion consists of three parts
+separated by a colon (&#8221;:&#8221;) character :</p>
+<ol class="arabic simple">
+<li>resource attribute name
+The name of the resource attribute to query. You can specify dotted
+names to query nested resources.</li>
+<li>operator
+The operator to apply.</li>
+<li>value
+The value to query for. It is possible to supply multiple values
+in a comma separated list, which will be interpreted as a Boolean &#8220;OR&#8221;
+operation on all given values.</li>
+</ol>
+<p>Supported query criterion value types are:</p>
+<dl class="last docutils">
+<dt>String</dt>
+<dd>Arbitrary string enclosed in double quotes.</dd>
+<dt>Number</dt>
+<dd>Integer or floating point, scientific notation allowed.</dd>
+<dt>Boolean</dt>
+<dd>Case insensitive string <strong>true</strong> or <strong>false</strong>.</dd>
+<dt>Date/Time</dt>
+<dd>ISO 8601 encoded string enclosed in double quotes.</dd>
+<dt>Resource</dt>
+<dd>URL referencing a resource.</dd>
+</dl>
+</div>
+<p>As an example, querying a collection resource &#8220;&#8221;</p>
+<p>If a query contains multiple criteria with different resource attribute names,
+the criteria are interpreted as a Boolean &#8220;AND&#8221; operation.</p>
+<p>The following table shows the available operators and data types in CQL:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="12%" />
+<col width="9%" />
+<col width="10%" />
+<col width="15%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Operator</th>
+<th class="head" colspan="5">Data Type</th>
+</tr>
+<tr class="row-even"><th class="head">Name</th>
+<th class="head">String</th>
+<th class="head">Number</th>
+<th class="head">Boolean</th>
+<th class="head">Date/Time</th>
+<th class="head">Resource</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">starts-with</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">not-starts-with</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">ends-with</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">not-ends-with</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">contains</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">not-contains</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">contained</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">not-contained</span></tt></td>
+<td>x</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">equal-to</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">not-equal-to</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">less-than</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">less-than-or-equal-to</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">greater-than</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><tt class="docutils literal"><span class="pre">greater-than-or-equal-to</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">in-range</span></tt></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>All attributes that are used to compose a query expression need to be mapped
+column properties in the ORM. Aliases are supported, CompositeProperties are
+not. All queried entities must have an &#8220;id&#8221; attribute.</p>
+<p>It is by design that the power of CQL to express complex queries is far behind
+that of SQL.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a><ul>
+<li><a class="reference internal" href="#querying-with-get">Querying with GET</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="building.html"
+                        title="previous chapter">Building <tt class="docutils literal docutils literal docutils literal"><span class="pre">everest</span></tt> applications</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="glossary.html"
+                        title="next chapter">Glossary of Terms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/using.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="glossary.html" title="Glossary of Terms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building everest applications"
+             >previous</a> |</li>
+        <li><a href="index.html">PlantScribe 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright Copyright (c) 2011-2012 F. Oliver Gathmann, Cenix BioScience, Dresden, Germany .
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
