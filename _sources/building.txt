@@ -7,6 +7,7 @@ application with :mod:`everest`.
 
 
 1. The application
+------------------
 
 Suppose you want to write a program that helps a garden designer with composing
 lists of beautiful perennials and shrubs that she intends to plant in her
@@ -16,6 +17,7 @@ projects (per customer), sites (per project), and plant species (per site).
 
 
 2. Designing the entity model
+-----------------------------
 
 :mod:`everest` applications keep their value state in :term:`entity` objects.
 
@@ -38,7 +40,7 @@ projects (per customer), sites (per project), and plant species (per site).
 The first step on our way to the Plant Scribe application is therefore to decide
 which data we want to store in our entity model. We start with the customer:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/entities/customer.py
+.. literalinclude:: ../plantscribe/entities/customer.py
    :linenos: 
 
 In our example, the :class:`Customer` class inherits from the :class:`Entity`
@@ -60,7 +62,7 @@ and first name.
 
 For each customer, we need to be able to handle an arbitrary number of projects:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/entities/project.py
+.. literalinclude:: ../plantscribe/entities/project.py
    :linenos: 
 
 Note that the ``name`` attribute, which serves as the project entity slug, does
@@ -75,29 +77,30 @@ convenience they offer. We will return to this issue a little later.
 
 Each project is referenced by one or more planting sites:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/entities/site.py
+.. literalinclude:: ../plantscribe/entities/site.py
    :linenos: 
 
 The plant species to choose from for each site are modeled as follows:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/entities/species.py
+.. literalinclude:: ../plantscribe/entities/species.py
    :linenos: 
 
 Finally, the information about which plant species to use at which site and in
 which quantity is modeled as an "incidence" entity:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/entities/incidence.py
+.. literalinclude:: ../plantscribe/entities/incidence.py
    :linenos:
 
 
 3. Designing and building the resource layer
+--------------------------------------------
 
 With the entity model in place, we can  now proceed to designing the resource
 layer. The first step here is to define the marker interfaces that
 :mod:`everest` will use to access the various parts of the resource system.
 This is very straightforward to do:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/interfaces.py
+.. literalinclude:: ../plantscribe/interfaces.py
    :linenos:
 
 Next, we move on to declaring the resource attributes using :mod:`everest`'s
@@ -122,19 +125,19 @@ from the outside.
 In our example application, the resources mostly declare the public attributes
 of the underlying entities as attributes:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/resources/customer.py
+.. literalinclude:: ../plantscribe/resources/customer.py
    :linenos:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/resources/project.py
+.. literalinclude:: ../plantscribe/resources/project.py
    :linenos:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/resources/site.py
+.. literalinclude:: ../plantscribe/resources/site.py
    :linenos:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/resources/species.py
+.. literalinclude:: ../plantscribe/resources/species.py
    :linenos:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/resources/incidence.py
+.. literalinclude:: ../plantscribe/resources/incidence.py
    :linenos:
 
 In the simple case where the resource attribute descriptor declares a public
@@ -163,6 +166,7 @@ even though the underlying entity does not reference its projects directly.
 
 
 4. Configuring the application
+------------------------------
 
 With the resource layer in place, we can now move on to configuring our
 application. :mod:`everest` applications are based on the :mod:`pyramid`
@@ -174,7 +178,7 @@ example on how to configure the extra resource functionality that
 
 The minimal ``.ini`` file for the ``plantscribe`` application is quite simple:
 
-.. literalinclude:: ../demoapp/v0/plantscribe.ini
+.. literalinclude:: ../plantscribe.ini
 
 The only purpose of the ``.ini`` file is to specify a ``Paster`` application
 factory which is responsible for creating and setting up the application
@@ -183,7 +187,7 @@ registry and for instantiating a WSGI application.
 The ``.zcml`` configuration file - which is loaded through the application
 factory - is more interesting:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/configure.zcml
+.. literalinclude:: ../plantscribe/configure.zcml
    :linenos:
 
 Note the ``include`` directive at the top of the file; this not only pulls in
@@ -214,16 +218,18 @@ of absolute URLs will not work.
 
 
 5. Running the application
+--------------------------
 
 To see our little application in action, we can use the ``pshell`` interactive
-shell that comes with ``Pyramid``. First, install the ``plantscribe`` package
-by issuing
+shell that comes with ``Pyramid``. First, install the ``plantscribe`` demo
+application by issuing
 
 .. code-block:: text
 
    $ pip install -e .
    
-inside the ``docs/demoapp/v0`` folder of the :mod:`everest` source tree. This
+inside a the root folder of a clone of the ``everest-demo`` project on github
+(`https://github.com/cenix/everest-demo.git`). This
 presumes you have followed the instructions of installing :mod:`everest` and
 use a ``virtualenv`` with the ``pip`` installer (cf. xxx).
 
@@ -270,6 +276,7 @@ the collection:
 
 
 6. Adding persistency
+---------------------
 
 With the application running, we now turn our attention to persistency.
 :mod:`everest` uses a :term:`repository` to load and save resources from and to
@@ -312,7 +319,7 @@ The metadata factory setting references a callable that takes an ``SQLAlchemy``
 engine as a parameter and returns a fully initialized metadata instance. For
 our simple application, this function looks like this:
 
-.. literalinclude:: ../demoapp/v0/plantscribe/orm.py
+.. literalinclude:: ../plantscribe/orm.py
    :linenos:
 
 The function first creates a database schema and then maps our entity classes to
