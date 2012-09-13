@@ -76,7 +76,7 @@ object provides access either to a single entity object
 other parts of the entity model, thus implementing the
 <a class="reference internal" href="glossary.html#term-business-logic"><em class="xref std std-term">business logic</em></a> of the application.</p>
 <p class="last">Each collection resource uses an <a class="reference internal" href="glossary.html#term-aggregate"><em class="xref std std-term">aggregate</em></a> to provide access to its
-underlying entities. They support slicing, filtering, and ordering
+underlying entities. Aggregates support slicing, filtering, and ordering
 operations.</p>
 </div>
 <p>The first step on our way to the Plant Scribe application is therefore to decide
@@ -116,8 +116,8 @@ and first name.</p>
 <div class="sidebar">
 <p class="first sidebar-title">Slugs</p>
 <p class="last">A <a class="reference internal" href="glossary.html#term-slug"><em class="xref std std-term">slug</em></a> is a character string that uniquely identifies an entity
-within its aggregate. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses the slug as part of the URL for
-the member resource wrapping an entity, so, ideally, it should ideally be a
+within its aggregate. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses the slug to generate an URL
+for the member resource wrapping an entity, so, ideally, it should be a
 short, mnemonic expression.</p>
 </div>
 <p>For each customer, we need to be able to handle an arbitrary number of projects:</p>
@@ -481,6 +481,10 @@ of the underlying entities as attributes:</p>
 <p>In the simple case where the resource attribute descriptor declares a public
 attribute of the underlying entity, it expects a type or an interface of the
 target object and the name of the corresponding entity attribute as arguments.</p>
+<p>For <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptors there
+is also an optional argument <tt class="docutils literal"><span class="pre">is_nested</span></tt> which determines if the URL for the
+target resource is going to be formed relative to the root (i.e., as an
+absolute path) or relative to the parent resource declaring the attribute.</p>
 <div class="sidebar">
 <p class="first sidebar-title">URL resolution</p>
 <p class="last"><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> favors and facilitates object traversal for URL resolution.
@@ -489,10 +493,6 @@ resource can be used directly for URL traversal unless they are specifically
 set as non-nested resource in the corresponding resource attribute
 declaration.</p>
 </div>
-<p>For <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptors there
-is also an optional argument <tt class="docutils literal"><span class="pre">is_nested</span></tt> which determines if the URL for the
-target resource is going to be formed relative to the root (i.e., as an
-absolute path) or relative to the parent resource declaring the attribute.</p>
 <p>We also have the possibility to declare resource attributes that do not
 reference the target resource directly through an entity attribute, but
 indirectly through a &#8220;backreferencing&#8221; attribute. In the example code, this is
@@ -568,116 +568,308 @@ factory which is responsible for creating and setting up the application
 registry and for instantiating a WSGI application.</p>
 <p>The <tt class="docutils literal"><span class="pre">.zcml</span></tt> configuration file - which is loaded through the application
 factory - is more interesting:</p>
-<div class="highlight-python"><pre>&lt;configure xmlns="http://pylonshq.com/pyramid"&gt;
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;configure</span> <span class="na">xmlns=</span><span class="s">&quot;http://pylonshq.com/pyramid&quot;</span><span class="nt">&gt;</span>
 
-    &lt;!-- Include special directives. --&gt;
+    <span class="c">&lt;!-- Include special directives. --&gt;</span>
 
-    &lt;include package="everest.includes" /&gt;
+    <span class="nt">&lt;include</span> <span class="na">package=</span><span class="s">&quot;everest.includes&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;!-- Repositories. --&gt;
+    <span class="c">&lt;!-- Repositories. --&gt;</span>
 
-    &lt;filesystem_repository
-        directory="tests/data"
-        content_type="everest.mime.CsvMime"
-        make_default="true" /&gt;
+    <span class="nt">&lt;filesystem_repository</span>
+        <span class="na">directory=</span><span class="s">&quot;tests/data&quot;</span>
+        <span class="na">content_type=</span><span class="s">&quot;everest.mime.CsvMime&quot;</span>
+        <span class="na">make_default=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;!-- Use this to try out the SQL alchemy backend (you will need to
-         comment out the filesystem_repository directive above)
-    &lt;orm_repository metadata_factory='plantscribe.orm.create_metadata'
-        make_default="true" /&gt;
-        --&gt;
+    <span class="c">&lt;!-- Use this to try out the SQL alchemy backend (you will need to</span>
+<span class="c">         comment out the filesystem_repository directive above)</span>
+<span class="c">    &lt;orm_repository metadata_factory=&#39;plantscribe.orm.create_metadata&#39;</span>
+<span class="c">        make_default=&quot;true&quot; /&gt;</span>
+<span class="c">        --&gt;</span>
 
-    &lt;!-- Renderers. --&gt;
+    <span class="c">&lt;!-- Representers. --&gt;</span>
 
-    &lt;renderer
-        name="csv"
-        factory="everest.renderers.RendererFactory" /&gt;
+    <span class="nt">&lt;representer</span> <span class="na">content_type=</span><span class="s">&quot;everest.mime.XmlMime&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;option</span>
+            <span class="na">name=</span><span class="s">&quot;xml_schema&quot;</span>
+            <span class="na">value=</span><span class="s">&quot;plantscribe:resources/Plantscribe.xsd&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;option</span>
+            <span class="na">name=</span><span class="s">&quot;xml_ns&quot;</span>
+            <span class="na">value=</span><span class="s">&quot;http://schemata.everest.org/plantscribe&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;option</span>
+            <span class="na">name=</span><span class="s">&quot;xml_prefix&quot;</span>
+            <span class="na">value=</span><span class="s">&quot;ps&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/representer&gt;</span>
 
-    &lt;renderer
-        name="atom"
-        factory="everest.renderers.RendererFactory" /&gt;
+    <span class="c">&lt;!-- Resource declarations. --&gt;</span>
 
-    &lt;!-- Representers. --&gt;
+    <span class="nt">&lt;include</span> <span class="na">file=</span><span class="s">&quot;resources.zcml&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;representer content_type="everest.mime.XmlMime"&gt;
-        &lt;option
-            name="xml_schema"
-            value="plantscribe:resources/Plantscribe.xsd" /&gt;
-        &lt;option
-            name="xml_ns"
-            value="http://schemata.everest.org/plantscribe" /&gt;
-        &lt;option
-            name="xml_prefix"
-            value="ps" /&gt;
-    &lt;/representer&gt;
+    <span class="c">&lt;!-- Views. --&gt;</span>
 
-    &lt;!-- Resource declarations. --&gt;
+    <span class="nt">&lt;collection_view</span>
+        <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ICustomer</span>
+<span class="s">             plantscribe.interfaces.IProject</span>
+<span class="s">             plantscribe.interfaces.ISpecies</span>
+<span class="s">            &quot;</span>
+        <span class="na">view=</span><span class="s">&quot;everest.views.getcollection.GetCollectionView&quot;</span>
+        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
+        <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;include file="resources.zcml" /&gt;
-
-    &lt;!-- Views. --&gt;
-
-    &lt;collection_view
-        for="plantscribe.interfaces.ICustomer
-             plantscribe.interfaces.IProject
-             plantscribe.interfaces.ISpecies
-            "
-        view="everest.views.getcollection.GetCollectionView"
-        renderer="atom"
-        request_method="GET" /&gt;
-
-    &lt;collection_view
-        for="plantscribe.interfaces.ICustomer
-             plantscribe.interfaces.IProject
-             plantscribe.interfaces.ISpecies
-            "
-        view="everest.views.postcollection.PostCollectionView"
-        renderer="atom"
-        request_method="POST"
-        permission="create" /&gt;
+    <span class="nt">&lt;collection_view</span>
+        <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ICustomer</span>
+<span class="s">             plantscribe.interfaces.IProject</span>
+<span class="s">             plantscribe.interfaces.ISpecies</span>
+<span class="s">            &quot;</span>
+        <span class="na">view=</span><span class="s">&quot;everest.views.postcollection.PostCollectionView&quot;</span>
+        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
+        <span class="na">request_method=</span><span class="s">&quot;POST&quot;</span>
+        <span class="na">permission=</span><span class="s">&quot;create&quot;</span> <span class="nt">/&gt;</span>
 
 
-    &lt;member_view
-        for="plantscribe.interfaces.ISite
-             plantscribe.interfaces.ICustomer
-             plantscribe.interfaces.IProject
-             plantscribe.interfaces.ISpecies
-             "
-        view="everest.views.getmember.GetMemberView"
-        renderer="atom"
-        request_method="GET" /&gt;
+    <span class="nt">&lt;member_view</span>
+        <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ISite</span>
+<span class="s">             plantscribe.interfaces.ICustomer</span>
+<span class="s">             plantscribe.interfaces.IProject</span>
+<span class="s">             plantscribe.interfaces.ISpecies</span>
+<span class="s">             &quot;</span>
+        <span class="na">view=</span><span class="s">&quot;everest.views.getmember.GetMemberView&quot;</span>
+        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
+        <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;collection_view
-        for="plantscribe.interfaces.ICustomer
-             plantscribe.interfaces.IProject
-             plantscribe.interfaces.ISpecies
-            "
-        name="csv"
-        accept="application/csv"
-        view="everest.views.getcollection.GetCollectionView"
-        renderer="csv"
-        request_method="GET" /&gt;
+    <span class="nt">&lt;collection_view</span>
+        <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ICustomer</span>
+<span class="s">             plantscribe.interfaces.IProject</span>
+<span class="s">             plantscribe.interfaces.ISpecies</span>
+<span class="s">            &quot;</span>
+        <span class="na">name=</span><span class="s">&quot;csv&quot;</span>
+        <span class="na">accept=</span><span class="s">&quot;application/csv&quot;</span>
+        <span class="na">view=</span><span class="s">&quot;everest.views.getcollection.GetCollectionView&quot;</span>
+        <span class="na">renderer=</span><span class="s">&quot;csv&quot;</span>
+        <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;!-- public folder for static content --&gt;
-    &lt;view
-        context="everest.resources.interfaces.IService"
-        view="everest.views.static.public_view"
-        name="public"
-        request_method="GET" /&gt;
+    <span class="c">&lt;!-- public folder for static content --&gt;</span>
+    <span class="nt">&lt;view</span>
+        <span class="na">context=</span><span class="s">&quot;everest.resources.interfaces.IService&quot;</span>
+        <span class="na">view=</span><span class="s">&quot;everest.views.static.public_view&quot;</span>
+        <span class="na">name=</span><span class="s">&quot;public&quot;</span>
+        <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
 
-    &lt;!-- this gives a static reference to the resources directory to be able
-         to load the xsd file from the outside world --&gt;
-    &lt;static
-        name="Resource.xsd"
-        path="everest:representers/Resource.xsd" /&gt;
-&lt;/configure&gt;
-</pre>
-</div>
+    <span class="c">&lt;!-- this gives a static reference to the resources directory to be able</span>
+<span class="c">         to load the xsd file from the outside world --&gt;</span>
+    <span class="nt">&lt;static</span>
+        <span class="na">name=</span><span class="s">&quot;Resource.xsd&quot;</span>
+        <span class="na">path=</span><span class="s">&quot;everest:representers/Resource.xsd&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/configure&gt;</span>
+</pre></div>
+</td></tr></table></div>
 <p>Note the <tt class="docutils literal"><span class="pre">include</span></tt> directive at the top of the file; this not only pulls in
 the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific ZCML directives, but also the Pyramid directives as
 well.</p>
-<p>The most important of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific directives is the <tt class="docutils literal"><span class="pre">resource</span></tt>
-directive. This sets up the connections between the various parts of the
+<p>The <tt class="docutils literal"><span class="pre">filesystem_repository</span></tt> declaration sets up a default resource repository
+backed by the file system in the <cite>tests/data</cite> folder as specified by the
+<cite>directory</cite> option. We will return to the topic of setting up and configuring
+resource repositories later.</p>
+<p>The most important of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific declarations are made using
+the <tt class="docutils literal"><span class="pre">resource</span></tt> directive. In the example application, the resources are
+declared in a separate <tt class="docutils literal"><span class="pre">zcml</span></tt> file (only the declarations for the
+<tt class="docutils literal"><span class="pre">ICustomer</span></tt> resource shown for brevity):</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;configure</span> <span class="na">xmlns=</span><span class="s">&quot;http://pylonshq.com/pyramid&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;resource</span>
+        <span class="na">interface=</span><span class="s">&#39;plantscribe.interfaces.ICustomer&#39;</span>
+        <span class="na">member=</span><span class="s">&quot;plantscribe.resources.customer.CustomerMember&quot;</span>
+        <span class="na">collection_root_name=</span><span class="s">&quot;customers&quot;</span>
+        <span class="na">entity=</span><span class="s">&quot;plantscribe.entities.customer.Customer&quot;</span>
+    <span class="nt">&gt;</span>
+        <span class="nt">&lt;representer</span>
+            <span class="na">kind=</span><span class="s">&quot;member&quot;</span>
+            <span class="na">content_type=</span><span class="s">&quot;everest.mime.XmlMime&quot;</span>
+        <span class="nt">&gt;</span>
+            <span class="nt">&lt;option</span>
+                <span class="na">name=</span><span class="s">&quot;xml_tag&quot;</span>
+                <span class="na">value=</span><span class="s">&quot;customer&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;option</span>
+                    <span class="na">name=</span><span class="s">&quot;ignore&quot;</span>
+                    <span class="na">value=</span><span class="s">&quot;false&quot;</span>
+                    <span class="na">type=</span><span class="s">&quot;zope.configuration.fields.Bool&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;option</span>
+                    <span class="na">name=</span><span class="s">&quot;write_as_link&quot;</span>
+                    <span class="na">value=</span><span class="s">&quot;false&quot;</span>
+                    <span class="na">type=</span><span class="s">&quot;zope.configuration.fields.Bool&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/attribute&gt;</span>
+            <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects.sites&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;option</span>
+                    <span class="na">name=</span><span class="s">&quot;ignore&quot;</span>
+                    <span class="na">value=</span><span class="s">&quot;false&quot;</span>
+                    <span class="na">type=</span><span class="s">&quot;zope.configuration.fields.Bool&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;option</span>
+                    <span class="na">name=</span><span class="s">&quot;write_as_link&quot;</span>
+                    <span class="na">value=</span><span class="s">&quot;false&quot;</span>
+                    <span class="na">type=</span><span class="s">&quot;zope.configuration.fields.Bool&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/attribute&gt;</span>
+        <span class="nt">&lt;/representer&gt;</span>
+        <span class="nt">&lt;representer</span>
+            <span class="na">kind=</span><span class="s">&quot;collection&quot;</span>
+            <span class="na">content_type=</span><span class="s">&quot;everest.mime.XmlMime&quot;</span>
+        <span class="nt">&gt;</span>
+            <span class="nt">&lt;option</span>
+                <span class="na">name=</span><span class="s">&quot;xml_tag&quot;</span>
+                <span class="na">value=</span><span class="s">&quot;customers&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/representer&gt;</span>
+    <span class="nt">&lt;/resource&gt;</span>
+
+<span class="nt">&lt;/configure&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="sidebar">
+<p class="first sidebar-title">The resource subsystem</p>
+<p>This graphics shows the relationship of the four main components of the
+resource subsystem for a hypothetical resource <tt class="docutils literal"><span class="pre">Foo</span></tt>. At the center is
+the marker interface <tt class="docutils literal"><span class="pre">IFoo</span></tt> with which all other components can be
+retrieved (and configured) at runtime.</p>
+<p class="last"><img alt="resource_classes" src="_images/resource_classes.png" /></p>
+</div>
+<p>Each <tt class="docutils literal"><span class="pre">resource</span></tt> directive sets up the various components of the
 resource subsystem, using our marker interfaces as the glue. At the minimum,
 you need to specify</p>
 <ul class="simple">
@@ -686,14 +878,23 @@ you need to specify</p>
 <li>A member class class for the resource; and</li>
 <li>A name for the root collection.</li>
 </ul>
-<p>The aggregate and collection objects needed by the resource subsystem (cf. xxx)
+<p>The aggregate and collection objects needed by the resource subsystem
 are created automatically; you may, however, supply a custom collection class
 that inherits from <tt class="xref py py-class docutils literal"><span class="pre">everest.resources.base.Collection</span></tt>. If you do not
 plan on exposing the collection for this resource to the outside, you can set
 the <tt class="docutils literal"><span class="pre">expose</span></tt> flag to <tt class="docutils literal"><span class="pre">false</span></tt>, in which case you do not need to provide a
 root collection name. Non-exposed resources will still be available as a root
 collection internally, but access through the service as well as the generation
-of absolute URLs will not work.</p>
+of absolute URLs for them will not work.</p>
+<p>Each <tt class="docutils literal"><span class="pre">resource</span></tt> directive may then contain one or several <tt class="docutils literal"><span class="pre">representer</span></tt>
+directives to specify how this resource should be converted to a representation
+and vice versa. You always need to specify the <tt class="docutils literal"><span class="pre">content_type</span></tt> a representer
+directive configures; in addition, you may specify the resource <tt class="docutils literal"><span class="pre">kind</span></tt> to
+configure as either &#8220;<tt class="docutils literal"><span class="pre">member</span></tt>&#8221; or &#8220;<tt class="docutils literal"><span class="pre">collection</span></tt>&#8221;. Then, the representer
+configuration can be specified using one or several <tt class="docutils literal"><span class="pre">option</span></tt> tags which
+have a <tt class="docutils literal"><span class="pre">name</span></tt>, a <tt class="docutils literal"><span class="pre">value</span></tt> and an optional <tt class="docutils literal"><span class="pre">type</span></tt> attribute. In addition,
+the representation of individual resource attributes can be fine-tuned using
+<tt class="docutils literal"><span class="pre">attribute</span></tt> tags. We will explain this feature in more detail later.</p>
 </div>
 <div class="section" id="running-the-application">
 <h2>5. Running the application<a class="headerlink" href="#running-the-application" title="Permalink to this headline">¶</a></h2>
@@ -747,8 +948,11 @@ the collection:</p>
 <h2>6. Adding persistency<a class="headerlink" href="#adding-persistency" title="Permalink to this headline">¶</a></h2>
 <p>With the application running, we now turn our attention to persistency.
 <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses a <a class="reference internal" href="glossary.html#term-repository"><em class="xref std std-term">repository</em></a> to load and save resources from and to
-a storage backend. To use a filesystem-based repository as the default for our
-application, we could use the following ZCML declaration:</p>
+a storage backend.</p>
+<p>By default, <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> does use a memory-based repository to store
+resources, which of course implies that there . The following ZCML declaration
+defines a filesystem-based repository as the default for our
+application:</p>
 <div class="highlight-text"><div class="highlight"><pre>&lt;filesystem_repository
    directory=&quot;data&quot;
    content_type=&quot;everest.mime.CsvMime&quot;
@@ -764,11 +968,12 @@ root collections are written back to their corresponding representation files.</
 <p>The filesystem-based repository does not perform well with complex or high
 volume data structures or in cases where several processes need to access the
 same persistency backend. In these situations, we need to switch to a an
-ORM-based repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses xxx <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> as ORM. What
-follows is a highly simplified account of what is needed to instruct
-<tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> application; for an
-explanation of the terms and concepts used in this section, please refer to the
-excellent documentation on the <cite>SQLAlchemy http://sqlalchemy.org</cite> web site.</p>
+ORM-based repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses <a class="reference external" href="http://sqlalchemy.org">SQLAlchemy</a>
+as ORM. What follows is a highly simplified account of what is needed to</p>
+<blockquote>
+<div>instruct <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt></div></blockquote>
+<p>application; for an explanation of the terms and concepts used in this section,
+please refer to the excellent documentation on the <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> web site.</p>
 <p>In a first step, we need to initialize the ORM. The following ZCML declaration
 makes the ORM the default resource repository:</p>
 <div class="highlight-text"><div class="highlight"><pre>&lt;orm_repository
@@ -1017,6 +1222,9 @@ ORM layer.</p>
 <p>To use an engine other than the default in-memory SQLite database engine, you
 need to supply a <tt class="docutils literal"><span class="pre">db_string</span></tt> setting in the paster application <tt class="docutils literal"><span class="pre">.ini</span></tt> file.
 For example:</p>
+<p>Note that while you can not have two default repositories, you could very well
+have one or more <tt class="docutils literal"><span class="pre">filesystem_repository</span></tt> declarations for individual
+resources, possibly even pointing to different directories in your file system.</p>
 <p>Different resorces may use different repositories, but any given resource can
 only be assigned to one repository.</p>
 </div>

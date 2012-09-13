@@ -34,7 +34,7 @@ projects (per customer), sites (per project), and plant species (per site).
    :term:`business logic` of the application.
 
    Each collection resource uses an :term:`aggregate` to provide access to its
-   underlying entities. They support slicing, filtering, and ordering
+   underlying entities. Aggregates support slicing, filtering, and ordering
    operations.
 
 The first step on our way to the Plant Scribe application is therefore to decide
@@ -55,10 +55,9 @@ and first name.
 .. sidebar:: Slugs
 
    A :term:`slug` is a character string that uniquely identifies an entity
-   within its aggregate. :mod:`everest` uses the slug as part of the URL for
-   the member resource wrapping an entity, so, ideally, it should ideally be a 
-   short, mnemonic expression. 
-
+   within its aggregate. :mod:`everest` uses the slug to generate an URL
+   for the member resource wrapping an entity, so, ideally, it should be a 
+   short, mnemonic expression.
 
 For each customer, we need to be able to handle an arbitrary number of projects:
 
@@ -108,7 +107,6 @@ resource attribute descriptors. Each resource attribute descriptor maps a
 single attribute from the resource's entity and makes it available for access
 from the outside.
 
-
 .. sidebar:: Resource Attribute Kinds 
 
    There are three kinds of resource attributes in :mod:`everest`: Terminal
@@ -120,8 +118,7 @@ from the outside.
    :func:`terminal_attribute`, :func:`member_attribute`, and
    :func:`collection_attribute` descriptor generating functions from the
    :mod:`resources.descriptors` module. 
-   
-   
+
 In our example application, the resources mostly declare the public attributes
 of the underlying entities as attributes:
 
@@ -144,6 +141,11 @@ In the simple case where the resource attribute descriptor declares a public
 attribute of the underlying entity, it expects a type or an interface of the
 target object and the name of the corresponding entity attribute as arguments.
 
+For :func:`member_attribute` and :func:`collection_attribute` descriptors there
+is also an optional argument ``is_nested`` which determines if the URL for the
+target resource is going to be formed relative to the root (i.e., as an
+absolute path) or relative to the parent resource declaring the attribute.
+
 .. sidebar:: URL resolution 
 
    :mod:`everest` favors and facilitates object traversal for URL resolution.
@@ -151,11 +153,6 @@ target object and the name of the corresponding entity attribute as arguments.
    resource can be used directly for URL traversal unless they are specifically
    set as non-nested resource in the corresponding resource attribute
    declaration.
-
-For :func:`member_attribute` and :func:`collection_attribute` descriptors there
-is also an optional argument ``is_nested`` which determines if the URL for the
-target resource is going to be formed relative to the root (i.e., as an
-absolute path) or relative to the parent resource declaring the attribute.
 
 We also have the possibility to declare resource attributes that do not
 reference the target resource directly through an entity attribute, but
@@ -188,14 +185,40 @@ The ``.zcml`` configuration file - which is loaded through the application
 factory - is more interesting:
 
 .. literalinclude:: ../plantscribe/configure.zcml
+   :language: xml
    :linenos:
 
 Note the ``include`` directive at the top of the file; this not only pulls in
 the :mod:`everest`-specific ZCML directives, but also the Pyramid directives as
 well.
 
-The most important of the :mod:`everest`-specific directives is the ``resource``
-directive. This sets up the connections between the various parts of the
+The ``filesystem_repository`` declaration sets up a default resource repository
+backed by the file system in the `tests/data` folder as specified by the
+`directory` option. We will return to the topic of setting up and configuring
+resource repositories later.
+
+The most important of the :mod:`everest`-specific declarations are made using
+the ``resource`` directive. In the example application, the resources are
+declared in a separate ``zcml`` file (only the declarations for the
+``ICustomer`` resource shown for brevity):
+
+.. literalinclude:: ../plantscribe/resources.zcml
+   :lines: 1-45,170-
+   :language: xml
+   :linenos:
+
+.. sidebar:: The resource subsystem
+
+   This graphics shows the relationship of the four main components of the
+   resource subsystem for a hypothetical resource ``Foo``. At the center is 
+   the marker interface ``IFoo`` with which all other components can be 
+   retrieved (and configured) at runtime.
+   
+   |resource_classes|
+   
+.. |resource_classes| image:: resource_classes.png
+
+Each ``resource`` directive sets up the various components of the
 resource subsystem, using our marker interfaces as the glue. At the minimum,
 you need to specify
 
@@ -207,14 +230,24 @@ you need to specify
 
 - A name for the root collection.
 
-The aggregate and collection objects needed by the resource subsystem (cf. xxx)
+The aggregate and collection objects needed by the resource subsystem
 are created automatically; you may, however, supply a custom collection class
 that inherits from :class:`everest.resources.base.Collection`. If you do not
 plan on exposing the collection for this resource to the outside, you can set
 the ``expose`` flag to ``false``, in which case you do not need to provide a
 root collection name. Non-exposed resources will still be available as a root
 collection internally, but access through the service as well as the generation
-of absolute URLs will not work.
+of absolute URLs for them will not work.
+
+Each ``resource`` directive may then contain one or several ``representer``
+directives to specify how this resource should be converted to a representation
+and vice versa. You always need to specify the ``content_type`` a representer
+directive configures; in addition, you may specify the resource ``kind`` to
+configure as either "``member``" or "``collection``". Then, the representer
+configuration can be specified using one or several ``option`` tags which
+have a ``name``, a ``value`` and an optional ``type`` attribute. In addition,
+the representation of individual resource attributes can be fine-tuned using
+``attribute`` tags. We will explain this feature in more detail later.
 
 
 5. Running the application
@@ -280,8 +313,12 @@ the collection:
 
 With the application running, we now turn our attention to persistency.
 :mod:`everest` uses a :term:`repository` to load and save resources from and to
-a storage backend. To use a filesystem-based repository as the default for our
-application, we could use the following ZCML declaration:
+a storage backend.
+
+By default, :mod:`everest` does use a memory-based repository to store
+resources, which of course implies that there . The following ZCML declaration
+defines a filesystem-based repository as the default for our
+application:
 
 .. code-block:: text
 
@@ -300,11 +337,11 @@ root collections are written back to their corresponding representation files.
 The filesystem-based repository does not perform well with complex or high
 volume data structures or in cases where several processes need to access the
 same persistency backend. In these situations, we need to switch to a an
-ORM-based repository. :mod:`everest` uses xxx ``SQLAlchemy`` as ORM. What
-follows is a highly simplified account of what is needed to instruct
-``SQLAlchemy`` to persist the entities of an :mod:`everest` application; for an
-explanation of the terms and concepts used in this section, please refer to the
-excellent documentation on the `SQLAlchemy http://sqlalchemy.org` web site.
+ORM-based repository. :mod:`everest` uses `SQLAlchemy <http://sqlalchemy.org>`_
+as ORM. What follows is a highly simplified account of what is needed to
+ instruct ``SQLAlchemy`` to persist the entities of an :mod:`everest`
+application; for an explanation of the terms and concepts used in this section,
+please refer to the excellent documentation on the ``SQLAlchemy`` web site.
 
 In a first step, we need to initialize the ORM. The following ZCML declaration
 makes the ORM the default resource repository:
@@ -314,6 +351,7 @@ makes the ORM the default resource repository:
     <orm_repository
         metadata_factory="everest.tests.testapp_db.db.create_metadata"
         make_default="true"/>
+
 
 The metadata factory setting references a callable that takes an ``SQLAlchemy``
 engine as a parameter and returns a fully initialized metadata instance. For
@@ -343,5 +381,9 @@ For example:
    [app:myapp]
    db_string = postgresql+psycopg2://%(db_user)s:%(db_password)s@%(db_server)s:%(db_port)s/%(db_name)s
    
+Note that while you can not have two default repositories, you could very well
+have one or more ``filesystem_repository`` declarations for individual
+resources, possibly even pointing to different directories in your file system.
+
 Different resorces may use different repositories, but any given resource can
 only be assigned to one repository.
