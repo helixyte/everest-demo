@@ -17,16 +17,6 @@
         make_default="true" />
         -->
 
-    <!-- Renderers. -->
-
-    <renderer
-        name="csv"
-        factory="everest.renderers.RendererFactory" />
-
-    <renderer
-        name="atom"
-        factory="everest.renderers.RendererFactory" />
-
     <!-- Representers. -->
 
     <representer content_type="everest.mime.XmlMime">
