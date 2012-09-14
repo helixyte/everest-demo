@@ -5,7 +5,6 @@ In this section, you will find a step-by-step guide on how to build a RESTful
 application with :mod:`everest`.
 
 
-
 1. The application
 ------------------
 
@@ -369,7 +368,7 @@ To use an engine other than the default in-memory SQLite database engine, you
 need to supply a ``db_string`` setting in the paster application ``.ini`` file.
 For example:
 
-.. code-block::text
+.. code-block:: text
 
    [DEFAULT]
    db_server = mydbserver
