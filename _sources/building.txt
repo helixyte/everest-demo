@@ -252,21 +252,43 @@ the representation of individual resource attributes can be fine-tuned using
 5. Running the application
 --------------------------
 
-To see our little application in action, we can use the ``pshell`` interactive
-shell that comes with ``Pyramid``. First, install the ``plantscribe`` demo
-application by issuing
+To see our little application in action, we first need to check out the
+latest sources for the :mod:`everest-demo` project from github:
+
+.. code-block:: text
+
+   $ git clone https://github.com/cenix/everest-demo.git 
+
+Then, install the ``plantscribe`` demo application by issuing
 
 .. code-block:: text
 
    $ pip install -e .
    
-inside a the root folder of a clone of the ``everest-demo`` project on github
-(`https://github.com/cenix/everest-demo.git`). This
+inside a the root folder of the ``everest-demo`` project folder. This
 presumes you have followed the instructions of installing :mod:`everest` and
 use a ``virtualenv`` with the ``pip`` installer (cf. xxx).
 
-Now, still from the same directory, you start the ``Pyramid`` ``pshell`` like
-this:
+Next, set up a deployment folder of your liking, e.g.
+
+.. code-block:: text
+
+   $ cd
+   $ mkdir webapps
+   $ mkdir webapps/plantscribe
+   
+and populate it with the following files from the ``everest-demo`` project
+folder [#f1]_:
+
+.. code-block:: text
+   $ cd webapps/plantscribe
+   $ cp -R ~/git/everest-demo/schemata .
+   $ cp -R ~/git/everest-demo/plantscribe/tests/data .
+   $ cp -R ~/git/everest-demo/plantscribe.ini .
+
+Now, we can use the ``pshell`` interactive shell that comes with :mod:`Pyramid`
+to explore the ``plantscribe`` application interactively from the command
+line like this:
 
 .. code-block:: text
 
@@ -305,6 +327,18 @@ the collection:
    'fox-peter'
    >>> c.get('fox-peter').__name__
    'fox-peter'
+
+To run the server, exit the pshell (CTRL-D) and use the ``paster`` command
+from the command line:
+
+.. code-block:: text
+
+   $ paster serve plantscribe.ini
+   
+With a tool like the excellent
+`REST client <http://code.google.com/p/rest-client/>`_ you can now explore
+the server response for various REST requests, e.g. a simple GET request to
+the URL `http://localhost:5432/customers`.
 
 
 6. Adding persistency
@@ -386,3 +420,7 @@ resources, possibly even pointing to different directories in your file system.
 
 Different resorces may use different repositories, but any given resource can
 only be assigned to one repository.
+
+.. rubric:: Footnotes
+
+.. [#f1] This step will eventually be automated with a paste script.
