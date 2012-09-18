@@ -5,15 +5,6 @@ Using :mod:`everest` applications
 Querying with GET
 -----------------
 
-One of the main features of the collection resources in :mod:`everest` are their
-advanced querying capabilities. Query strings have to conform to
-
-An incoming query through a GET request is processed by :mod:`everest` in two
-steps: First, the query string submitted by the client is parsed into a query
-specification; and second, this query specification is translated to an object
-that can be applied to the collection resource acting as the query context.
-
-
 .. sidebar:: Collection Query Language (CQL)
 
    :mod:`everest` supports a custom Collection Query Language (CQL) for
@@ -46,6 +37,23 @@ that can be applied to the collection resource acting as the query context.
    Resource
       URL referencing a resource.
 
+One of the main features of the collection resources in :mod:`everest` are their
+advanced querying capabilities. Query strings have to conform to a simple
+"Collection Query Language"
+
+An incoming query through a GET request is processed by :mod:`everest` in three
+steps:
+
+ 1. The query string submitted by the client is parsed into a resource filter
+    specification and applied to the context collection resource.
+ 2. The resource filter specification is translated into an entity filter
+    specification. This allows not only to expose entity attributes under a
+    different name, but also to expose attributes from nested entities.
+ 3. The entity filter specification is applied to the aggregate which in
+    turn performs the specified filtering operation when it is iterated.
+
+
+
 As an example, querying a collection resource ""
 
 .. code-block: text
@@ -70,13 +78,13 @@ The following table shows the available operators and data types in CQL:
   ``not-contains``               x
    ``contained``                 x
  ``not-contained``               x
-    ``equal-to``
-  ``not-equal-to``
-    ``less-than``
-``less-than-or-equal-to``
-   ``greater-than``
-``greater-than-or-equal-to``
-     ``in-range``
+    ``equal-to``                 x        x      x         x         x
+  ``not-equal-to``               x        x      x         x         x
+    ``less-than``                         x
+``less-than-or-equal-to``                 x
+   ``greater-than``                       x
+``greater-than-or-equal-to``              x
+     ``in-range``                         x
 ============================  ======== ====== ======= ========== ========
 
 
