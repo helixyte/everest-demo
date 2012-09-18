@@ -22,7 +22,7 @@
     <representer content_type="everest.mime.XmlMime">
         <option
             name="xml_schema"
-            value="plantscribe:resources/Plantscribe.xsd" />
+            value="plantscribe:schemata/Plantscribe.xsd" />
         <option
             name="xml_ns"
             value="http://schemata.everest.org/plantscribe" />
@@ -85,9 +85,4 @@
         name="public"
         request_method="GET" />
 
-    <!-- this gives a static reference to the resources directory to be able
-         to load the xsd file from the outside world -->
-    <static
-        name="Resource.xsd"
-        path="everest:representers/Resource.xsd" />
 </configure>

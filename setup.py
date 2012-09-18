@@ -22,5 +22,11 @@ setup(name='plantscribe',
       install_requires=['distribute',
                         'everest'],
       dependency_links=['https://github.com/cenix/everest/tarball/master#egg=everest-dev',
-                        ]
+                        ],
+      entry_points="""\
+      [paste.filter_app_factory]
+      flexfilter = everest.flexfilter:FlexFilter.paste_deploy_middleware
+      """
       )
+
+
