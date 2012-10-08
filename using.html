@@ -115,6 +115,9 @@
   <ul class="dropdown-menu localtoc"><ul>
 <li><a class="reference internal" href="#">Using <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a><ul>
 <li><a class="reference internal" href="#querying-with-get">Querying with GET</a></li>
+<li><a class="reference internal" href="#customizing-representations">Customizing representations</a></li>
+<li><a class="reference internal" href="#customizing-resources">Customizing resources</a></li>
+<li><a class="reference internal" href="#customizing-views">Customizing views</a></li>
 </ul>
 </li>
 </ul>
@@ -122,6 +125,9 @@
   <!--<span class="localtoc"><ul>
 <li><a class="reference internal" href="#">Using <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a><ul>
 <li><a class="reference internal" href="#querying-with-get">Querying with GET</a></li>
+<li><a class="reference internal" href="#customizing-representations">Customizing representations</a></li>
+<li><a class="reference internal" href="#customizing-resources">Customizing resources</a></li>
+<li><a class="reference internal" href="#customizing-views">Customizing views</a></li>
 </ul>
 </li>
 </ul>
@@ -194,19 +200,37 @@ operation on all given values.</li>
 </dl>
 </div>
 <p>One of the main features of the collection resources in <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> are their
-advanced querying capabilities. Query strings have to conform to a simple
+advanced querying, batching, and ordering capabilities.</p>
+<p>Query strings have to be submitted as expressions
 &#8220;Collection Query Language&#8221;</p>
-<p>An incoming query through a GET request is processed by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> in three
-steps:</p>
+<p>A GET request to a collection resource with a query string such as</p>
+<p><a class="reference external" href="http://localhost:6543/customers?q=first-name:startswith">http://localhost:6543/customers?q=first-name:startswith</a>:&#8221;J&#8221;?order=last-name:asc?size=100</p>
+<p>is processed by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> as follows:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>The query string submitted by the client is parsed into a resource filter
-specification and applied to the context collection resource.</li>
-<li>The resource filter specification is translated into an entity filter
-specification. This allows not only to expose entity attributes under a
-different name, but also to expose attributes from nested entities.</li>
-<li>The entity filter specification is applied to the aggregate which in
-turn performs the specified filtering operation when it is iterated.</li>
+<li>The context and its associated view are identified just as in any vanilla
+<tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt> application. In the example, this would be the <tt class="docutils literal"><span class="pre">customers</span></tt>
+collection resource at the root of the object tree (the &#8220;root collection&#8221;)
+and the <tt class="xref py py-class docutils literal"><span class="pre">everest.views.getcollection.GetCollectionView</span></tt>;</li>
+<li>The view parses the query string submitted by the client (in the example,
+the <tt class="docutils literal"><span class="pre">q=first-name:equal-to:John</span></tt> part of the URL) into a resource
+filter specification and applies it to the context collection resource.
+This triggers a translation of the resource filter specification into
+an entity filter specification which is then applied to the underlying
+aggregate. This separation of resource and entity level attributes makes
+it not only possible to expose entity attributes under a different name
+at the level of the resource, but also to expose attributes from nested
+entities;</li>
+<li>The view parses and applies the order string (<tt class="docutils literal"><span class="pre">order=last-name:asc</span></tt>)
+in the same fashion as the query string;</li>
+</ol>
+<p>4. The view parses the size string (<tt class="docutils literal"><span class="pre">size=100</span></tt>)
+4. The view iterates over the context collection resourc and wraps the</p>
+<blockquote>
+<div>filtered, ordered, and batched member resources into a new result
+collection resource;</div></blockquote>
+<ol class="arabic simple" start="5">
+<li>The resulting collection resource is passed to</li>
 </ol>
 </div></blockquote>
 <p>As an example, querying a collection resource &#8220;&#8221;</p>
@@ -347,6 +371,54 @@ column properties in the ORM. Aliases are supported, CompositeProperties are
 not. All queried entities must have an &#8220;id&#8221; attribute.</p>
 <p>It is by design that the power of CQL to express complex queries is far behind
 that of SQL.</p>
+</div>
+<div class="section" id="customizing-representations">
+<h2>Customizing representations<a class="headerlink" href="#customizing-representations" title="Permalink to this headline">¶</a></h2>
+<p>The default behavior of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> representers is to</p>
+<blockquote>
+<div><ul class="simple">
+<li>Represent all terminal attributes explicitly;</li>
+<li>Represent nested member resources as links; and</li>
+<li>Ignore nested collection resources.</li>
+</ul>
+</div></blockquote>
+<p>Nested collections are ignored by default because generating a URL for a
+collection may require iterating over all its members which is potentially
+a very time consuming operation.</p>
+<p>To change these defaults for a given resource attribute, we set the appropriate
+<tt class="docutils literal"><span class="pre">representer</span></tt>, <tt class="docutils literal"><span class="pre">attribute</span></tt> and <tt class="docutils literal"><span class="pre">option</span></tt> tags inside a <tt class="docutils literal"><span class="pre">resource</span></tt>
+declaration. For example, to include the nested <tt class="docutils literal"><span class="pre">projects</span></tt> collection in
+<tt class="docutils literal"><span class="pre">XML</span></tt> representations of <tt class="docutils literal"><span class="pre">customer</span></tt> members we would include the
+following declaration in the <tt class="docutils literal"><span class="pre">ZCML</span></tt> configuration file:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;representer</span>
+   <span class="na">kind=</span><span class="s">&quot;member&quot;</span>
+   <span class="na">content_type=</span><span class="s">&quot;everest.mime.XmlMime&quot;</span>
+<span class="nt">&gt;</span>
+   <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects&quot;</span><span class="nt">&gt;</span>
+       <span class="nt">&lt;option</span>
+           <span class="na">name=</span><span class="s">&quot;ignore&quot;</span>
+           <span class="na">value=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+       <span class="nt">&lt;option</span>
+           <span class="na">name=</span><span class="s">&quot;write_as_link&quot;</span>
+           <span class="na">value=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+   <span class="nt">&lt;/attribute&gt;</span>
+<span class="nt">&lt;/representer&gt;</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">ignore</span></tt> option is a shorthand for setting both the <tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>
+and the <tt class="docutils literal"><span class="pre">ignore_on_write</span></tt> option which set the ignore behavior selectively
+when a representation is parsed (<tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>) or generated
+(<tt class="docutils literal"><span class="pre">ignore_on_write</span></tt>). The <tt class="docutils literal"><span class="pre">write_as_link</span></tt> option ensures that the nested
+resource is represented as a (URL) link rather than as an explicit
+recursive representation of all its attributes.</p>
+</div>
+<div class="section" id="customizing-resources">
+<h2>Customizing resources<a class="headerlink" href="#customizing-resources" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="customizing-views">
+<h2>Customizing views<a class="headerlink" href="#customizing-views" title="Permalink to this headline">¶</a></h2>
+<p>Very l, the standard <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> views will
+not</p>
 </div>
 </div>
 
