@@ -16,22 +16,23 @@
             <attribute name="projects">
                 <option
                     name="ignore"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
                 <option
                     name="write_as_link"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
+            </attribute>
+            <attribute name="projects.customer">
+                <option
+                    name="ignore"
+                    value="false" />
             </attribute>
             <attribute name="projects.sites">
                 <option
                     name="ignore"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
                 <option
                     name="write_as_link"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
             </attribute>
         </representer>
         <representer
@@ -67,18 +68,15 @@
             <attribute name="sites">
                 <option
                     name="ignore"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
                 <option
                     name="write_as_link"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
             </attribute>
             <attribute name="sites.incidences">
                 <option
                     name="ignore"
-                    value="true"
-                    type="zope.configuration.fields.Bool" />
+                    value="true" />
             </attribute>
         </representer>
     </resource>
@@ -98,12 +96,10 @@
             <attribute name="incidences">
                 <option
                     name="ignore"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
                 <option
                     name="write_as_link"
-                    value="false"
-                    type="zope.configuration.fields.Bool" />
+                    value="false" />
             </attribute>
         </representer>
         <representer
@@ -154,8 +150,7 @@
             <attribute name="site">
                 <option
                     name="ignore"
-                    value="true"
-                    type="zope.configuration.fields.Bool" />
+                    value="true" />
             </attribute>
         </representer>
         <representer
