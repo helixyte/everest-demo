@@ -41,7 +41,6 @@
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
             "
-        renderer="atom"
         request_method="GET" />
 
     <collection_view
@@ -49,7 +48,6 @@
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
             "
-        renderer="atom"
         request_method="POST"
         permission="create" />
 
@@ -58,25 +56,12 @@
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
             "
-        view="everest.views.putmember.PutMemberView"
-        renderer="atom"
         request_method="POST"
         header="X-HTTP-Method-Override:PUT" />
 
     <member_view
         for="plantscribe.interfaces.ISite
              "
-        renderer="atom"
-        request_method="GET" />
-
-    <resource_view
-        for="plantscribe.interfaces.ICustomer
-             plantscribe.interfaces.IProject
-             plantscribe.interfaces.ISpecies
-            "
-        name="csv"
-        accept="application/csv"
-        renderer="csv"
         request_method="GET" />
 
     <!-- Public folder for static content (e.g., for XML schemata). -->
