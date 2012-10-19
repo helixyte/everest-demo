@@ -794,22 +794,7 @@ application:</p>
 71
 72
 73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;configure</span> <span class="na">xmlns=</span><span class="s">&quot;http://pylonshq.com/pyramid&quot;</span><span class="nt">&gt;</span>
+74</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;configure</span> <span class="na">xmlns=</span><span class="s">&quot;http://pylonshq.com/pyramid&quot;</span><span class="nt">&gt;</span>
 
     <span class="c">&lt;!-- Include special directives. --&gt;</span>
 
@@ -852,7 +837,6 @@ application:</p>
 <span class="s">             plantscribe.interfaces.IProject</span>
 <span class="s">             plantscribe.interfaces.ISpecies</span>
 <span class="s">            &quot;</span>
-        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
         <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
 
     <span class="nt">&lt;collection_view</span>
@@ -860,34 +844,20 @@ application:</p>
 <span class="s">             plantscribe.interfaces.IProject</span>
 <span class="s">             plantscribe.interfaces.ISpecies</span>
 <span class="s">            &quot;</span>
-        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
-        <span class="na">request_method=</span><span class="s">&quot;POST&quot;</span>
-        <span class="na">permission=</span><span class="s">&quot;create&quot;</span> <span class="nt">/&gt;</span>
+        <span class="na">request_method=</span><span class="s">&quot;POST&quot;</span> <span class="nt">/&gt;</span>
 
     <span class="nt">&lt;member_view</span>
         <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ICustomer</span>
 <span class="s">             plantscribe.interfaces.IProject</span>
 <span class="s">             plantscribe.interfaces.ISpecies</span>
 <span class="s">            &quot;</span>
-        <span class="na">view=</span><span class="s">&quot;everest.views.putmember.PutMemberView&quot;</span>
-        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
-        <span class="na">request_method=</span><span class="s">&quot;POST&quot;</span>
-        <span class="na">header=</span><span class="s">&quot;X-HTTP-Method-Override:PUT&quot;</span> <span class="nt">/&gt;</span>
+        <span class="na">request_method=</span><span class="s">&quot;PUT</span>
+<span class="s">                        FAKE_PUT</span>
+<span class="s">                        DELETE&quot;</span> <span class="nt">/&gt;</span>
 
     <span class="nt">&lt;member_view</span>
         <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ISite</span>
 <span class="s">             &quot;</span>
-        <span class="na">renderer=</span><span class="s">&quot;atom&quot;</span>
-        <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
-
-    <span class="nt">&lt;resource_view</span>
-        <span class="na">for=</span><span class="s">&quot;plantscribe.interfaces.ICustomer</span>
-<span class="s">             plantscribe.interfaces.IProject</span>
-<span class="s">             plantscribe.interfaces.ISpecies</span>
-<span class="s">            &quot;</span>
-        <span class="na">name=</span><span class="s">&quot;csv&quot;</span>
-        <span class="na">accept=</span><span class="s">&quot;application/csv&quot;</span>
-        <span class="na">renderer=</span><span class="s">&quot;csv&quot;</span>
         <span class="na">request_method=</span><span class="s">&quot;GET&quot;</span> <span class="nt">/&gt;</span>
 
     <span class="c">&lt;!-- Public folder for static content (e.g., for XML schemata). --&gt;</span>
@@ -1049,17 +1019,17 @@ options as the latter except for the following differences:</p>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">for_</span></tt> option accepts not one, but any number of context specifiers.
 You can use also use resource interfaces here;</p>
 </li>
-<li><p class="first">Unless the <tt class="docutils literal"><span class="pre">view</span></tt> option is passed explicitly, the default <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>
-view is inferred based on the value of the <tt class="docutils literal"><span class="pre">request_method</span></tt> option (which
-defaults to &#8220;<tt class="docutils literal"><span class="pre">GET</span></tt>&#8221;) according to the following table:</p>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">request_method</span></tt> option has special meaning in the resource view
+directives in that it determines the default <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> view as outlined
+in the following table:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="29%" />
-<col width="32%" />
-<col width="39%" />
+<col width="36%" />
+<col width="30%" />
+<col width="34%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head"><p class="first last"><strong>Resource Kind</strong></p>
+<tr class="row-odd"><th class="head"><p class="first last"><strong>Context Resource Kind</strong></p>
 </th>
 <th class="head"><p class="first last"><strong>Request Method</strong></p>
 </th>
@@ -1091,20 +1061,83 @@ defaults to &#8220;<tt class="docutils literal"><span class="pre">GET</span></tt
 </tr>
 <tr class="row-odd"><td><p class="first last">Member</p>
 </td>
-<td><p class="first last">PUT</p>
+<td><p class="first last">PUT or FAKE_PUT</p>
 </td>
 <td><p class="first last">PutMemberView</p>
 </td>
 </tr>
 <tr class="row-even"><td><p class="first last">Member</p>
 </td>
-<td><p class="first last">DELETE</p>
+<td><p class="first last">DELETE or FAKE_DELETE</p>
 </td>
 <td><p class="first last">DeleteMemberView</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>The <tt class="docutils literal"><span class="pre">FAKE_PUT</span></tt> and <tt class="docutils literal"><span class="pre">FAKE_DELETE</span></tt> values for the <tt class="docutils literal"><span class="pre">request_method</span></tt>
+option instruct <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to register a view that will respond to
+<tt class="docutils literal"><span class="pre">POST</span></tt> requests that have the <tt class="docutils literal"><span class="pre">X-HTTP-Method-Override:PUT</span></tt> or the
+<tt class="docutils literal"><span class="pre">X-HTTP-Method-Override:DELETE</span></tt> header set with a <tt class="docutils literal"><span class="pre">PUT</span></tt> or <tt class="docutils literal"><span class="pre">DELETE</span></tt>
+operation, respectively. This is useful for clients that offer no support
+for <tt class="docutils literal"><span class="pre">PUT</span></tt> or <tt class="docutils literal"><span class="pre">POST</span></tt> (e.g., Flex).</p>
+<p>You can suppress automatic view detection by explicitly passing in a value
+for the <tt class="docutils literal"><span class="pre">view</span></tt> option. Note that you can also specify several request
+method arguments in one view declaration to register the associated view
+for each request method in a single directive.</p>
+<p>In addition to the default view, named views are registered for all builtin
+representers so that the client can address representations of different
+MIME content types directly using a URL suffix:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="42%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><p class="first last"><strong>View Name</strong></p>
+</th>
+<th class="head"><p class="first last"><strong>MIME Type</strong></p>
+</th>
+<th class="head"><p class="first last"><strong>URL Suffix</strong></p>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><p class="first last">csv</p>
+</td>
+<td><p class="first last">application/csv</p>
+</td>
+<td><p class="first last">/&#64;&#64;csv</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last">json</p>
+</td>
+<td><p class="first last">application/json</p>
+</td>
+<td><p class="first last">/&#64;&#64;json</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last">xml</p>
+</td>
+<td><p class="first last">application/xml</p>
+</td>
+<td><p class="first last">/&#64;&#64;xml</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last">atom</p>
+</td>
+<td><p class="first last">application/xml+atom</p>
+</td>
+<td><p class="first last">/&#64;&#64;atom</p>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">default_content_type</span></tt> option determines the MIME type of the
+representation returned in the response when the client does not indicate
+a preference.</p>
 </li>
 </ul>
 <p>There is only one difference between the three custom <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> view
