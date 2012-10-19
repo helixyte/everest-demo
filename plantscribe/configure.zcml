@@ -48,16 +48,16 @@
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
             "
-        request_method="POST"
-        permission="create" />
+        request_method="POST" />
 
     <member_view
         for="plantscribe.interfaces.ICustomer
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
             "
-        request_method="POST"
-        header="X-HTTP-Method-Override:PUT" />
+        request_method="PUT
+                        FAKE_PUT
+                        DELETE" />
 
     <member_view
         for="plantscribe.interfaces.ISite

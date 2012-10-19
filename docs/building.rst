@@ -285,19 +285,48 @@ options as the latter except for the following differences:
 
 * The ``for_`` option accepts not one, but any number of context specifiers.
   You can use also use resource interfaces here;
-* Unless the ``view`` option is passed explicitly, the default :mod:`everest`
-  view is inferred based on the value of the ``request_method`` option (which
-  defaults to "``GET``") according to the following table:
+* The ``request_method`` option has special meaning in the resource view
+  directives in that it determines the default :mod:`everest` view as outlined
+  in the following table:
 
-  ================== ==================== ========================
-  **Resource Kind**   **Request Method**   **Default View Class**
-  ================== ==================== ========================
-  Collection         GET                  GetCollectionView
-  Collection         POST                 PostCollectionView
-  Member             GET                  GetMemberView
-  Member             PUT                  PutMemberView
-  Member             DELETE               DeleteMemberView
-  ================== ==================== ========================
+  ========================= ===================== ========================
+  **Context Resource Kind** **Request Method**    **Default View Class**
+  ========================= ===================== ========================
+  Collection                GET                   GetCollectionView
+  Collection                POST                  PostCollectionView
+  Member                    GET                   GetMemberView
+  Member                    PUT or FAKE_PUT       PutMemberView
+  Member                    DELETE or FAKE_DELETE DeleteMemberView
+  ========================= ===================== ========================
+
+  The ``FAKE_PUT`` and ``FAKE_DELETE`` values for the ``request_method``
+  option instruct :mod:`everest` to register a view that will respond to
+  ``POST`` requests that have the ``X-HTTP-Method-Override:PUT`` or the
+  ``X-HTTP-Method-Override:DELETE`` header set with a ``PUT`` or ``DELETE``
+  operation, respectively. This is useful for clients that offer no support
+  for ``PUT`` or ``POST`` (e.g., Flex).
+
+  You can suppress automatic view detection by explicitly passing in a value
+  for the ``view`` option. Note that you can also specify several request
+  method arguments in one view declaration to register the associated view
+  for each request method in a single directive.
+
+  In addition to the default view, named views are registered for all builtin
+  representers so that the client can address representations of different
+  MIME content types directly using a URL suffix:
+
+  ============= ==================== ===============
+  **View Name** **MIME Type**         **URL Suffix**
+  ============= ==================== ===============
+  csv           application/csv      /@@csv
+  json          application/json     /@@json
+  xml           application/xml      /@@xml
+  atom          application/xml+atom /@@atom
+  ============= ==================== ===============
+
+* The ``default_content_type`` option determines the MIME type of the
+  representation returned in the response when the client does not indicate
+  a preference.
 
 There is only one difference between the three custom :mod:`everest` view
 directives: When a resource interface is used as value for the ``for_`` option
@@ -478,8 +507,11 @@ resources, possibly even pointing to different directories in your file system.
 Different resorces may use different repositories, but any given resource can
 only be assigned to one repository.
 
+
+
 .. rubric:: Footnotes
 
 .. [#f1] If you use ``easy_install`` as your package manager, the equivalent 
          invocation would be "``easy_install develop .``".
 .. [#f2] This step will eventually be automated with a paste script.
+         
