@@ -286,8 +286,9 @@ options as the latter except for the following differences:
 * The ``for_`` option accepts not one, but any number of context specifiers.
   You can use also use resource interfaces here;
 * The ``request_method`` option has special meaning in the resource view
-  directives in that it determines the default :mod:`everest` view as outlined
-  in the following table:
+  directives in that, together with the value of the ``for_`` option, it
+  allows :mod:`everest` to determine which view class to use. The following
+  table shows the rules for this view autodetection feature:
 
   ========================= ===================== ========================
   **Context Resource Kind** **Request Method**    **Default View Class**

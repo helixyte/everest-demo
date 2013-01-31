@@ -4,8 +4,8 @@ See LICENSE.txt for licensing, CONTRIBUTORS.txt for contributor information.
 
 Created on Mar 27, 2012.
 """
-from everest.orm import as_slug_expression
-from everest.orm import mapper
+from everest.repositories.rdb.utils import as_slug_expression
+from everest.repositories.rdb.utils import mapper
 from plantscribe.entities.customer import Customer
 from plantscribe.entities.incidence import Incidence
 from plantscribe.entities.project import Project

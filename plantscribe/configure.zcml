@@ -13,7 +13,8 @@
 
     <!-- Use this to try out the SQL alchemy backend (you will need to comment 
         out the filesystem_repository directive above) -->
-    <!-- <orm_repository metadata_factory='plantscribe.orm.create_metadata' 
+    <!-- <rdb_repository 
+        metadata_factory='plantscribe.rdb.create_metadata' 
         make_default="true" /> -->
 
     <!-- Representers. -->

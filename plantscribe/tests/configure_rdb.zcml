@@ -6,8 +6,8 @@
 
     <!-- Repositories. -->
 
-    <orm_repository
-        metadata_factory='plantscribe.orm.create_metadata'
+    <rdb_repository
+        metadata_factory='plantscribe.rdb.create_metadata'
         make_default="true" />
 
     <!-- Resource declarations. -->

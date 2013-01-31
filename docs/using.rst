@@ -10,9 +10,11 @@ Querying with GET
    :mod:`everest` supports a custom Collection Query Language (CQL) for
    querying collection resources.
 
-   CQL query expressions are composed of one or more query criteria separated
-   by the tilde ("~") character. Each criterion consists of three parts
-   separated by a colon (":") character :
+   A CQL query consists of a filtering part, an ordering part, and a batching
+   part. The filtering part (indicated 
+   CQL query expressions are composed of one or more query criteria. There
+   are two types of query crit which
+   each consists of three parts separated by a colon (":") character :
 
    1. resource attribute name
       The name of the resource attribute to query. You can specify dotted 
@@ -22,9 +24,21 @@ Querying with GET
    3. value 
       The value to query for. It is possible to supply multiple values
       in a comma separated list, which will be interpreted as a Boolean "OR"
-      operation on all given values. 
+      operation on all given values.
       
-   Supported query criterion value types are:
+   An example for a CQL criterion would be `last-name:equal-to:"Doe"`.
+      
+   Multiple CQL criteria can be combined using the two logical operators
+   "`AND`" and "`OR`" where "`AND`" expressions have precedence over "`OR`" 
+   expressions. The precedence rules can be overridden using open and close
+   parentheses ("`(`" and "`)`").
+   
+   :mod:`everest` also supports using the tilde ("~") character as a 
+   shorthand for the "`AND`" operator. Note, however, that you can not 
+   combine a criteria expression that uses the tilde character with one
+   that uses the standard `AND` and `OR` operators.
+      
+   Supported value types for a CQL criterion are:
 
    String
       Arbitrary string enclosed in double quotes.
@@ -37,11 +51,12 @@ Querying with GET
    Resource
       URL referencing a resource.
 
-One of the main features of the collection resources in :mod:`everest` are their
-advanced querying, batching, and ordering capabilities.
+One of the main features of the collection resources in :mod:`everest` are
+their advanced filtering, ordering and batching capabilities.
 
-Query strings have to be submitted as expressions
-"Collection Query Language"
+Query strings have to conform to a custom query language (see sidebar
+"Collection Query Language" for details).
+
 
 A GET request to a collection resource with a query string such as
 
@@ -61,15 +76,20 @@ is processed by :mod:`everest` as follows:
     aggregate. This separation of resource and entity level attributes makes
     it not only possible to expose entity attributes under a different name
     at the level of the resource, but also to expose attributes from nested
-    entities;
- 3. The view parses and applies the order string (``order=last-name:asc``)
-    in the same fashion as the query string;
- 4. The view parses the size string (``size=100``)
- 4. The view iterates over the context collection resourc and wraps the
+    entities (using "dotted" identifiers);
+ 3. The view processes the order string (``order=last-name:asc``) in the same
+    fashion as the query string;
+ 4. The view parses the batch size string (``size=100``) and applies this
+    setting to the context collection resource;
+ 4. The view iterates over the context collection resource and wraps the
     filtered, ordered, and batched member resources into a new result
     collection resource;
- 5. The resulting collection resource is passed to
-
+ 5. Using a representer, the view creates a string representation of the
+    resource of the appropriate content type (either requested by the client
+    or statically defined for the resource);
+ 6. The view fills the response body with the representation, sets up the
+    response headers and returns the response for further processing through
+    the WSGI stack.
 
 
 As an example, querying a collection resource ""

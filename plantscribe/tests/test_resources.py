@@ -6,7 +6,7 @@ Created on Jan 9, 2012.
 """
 from StringIO import StringIO
 from everest.mime import CsvMime
-from everest.repository import REPOSITORIES
+from everest.repositories.constants import REPOSITORY_TYPES
 from everest.resources.io import dump_resource
 from everest.resources.utils import get_collection_class
 from everest.resources.utils import get_root_collection
@@ -90,7 +90,7 @@ class PlantScribeResourcesOrmTestCase(_PlantScribeResourcesBaseTestCase):
         _PlantScribeResourcesBaseTestCase.set_up(self)
         #
         repo_mgr = get_repository_manager()
-        repo = repo_mgr.get(REPOSITORIES.ORM)
+        repo = repo_mgr.get(REPOSITORY_TYPES.RDB)
         data_dir = os.path.join(os.path.dirname(__file__), 'data')
         for coll_name, coll_cls in \
                 (('customer', get_collection_class(ICustomer)),
