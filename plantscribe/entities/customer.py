@@ -9,4 +9,5 @@ class Customer(Entity):
 
     @property
     def slug(self):
-        return slug_from_string("%s-%s" % (self.last_name, self.first_name))
+        return slug_from_string("%s-%s" %
+                                (self.last_name, self.first_name))
