@@ -1,5 +1,5 @@
-Building :mod:`everest` applications
-====================================
+Building *everest* applications
+===============================
 
 In this section, you will find a step-by-step guide on how to build a RESTful
 application with :mod:`everest`.
@@ -40,6 +40,7 @@ The first step on our way to the Plant Scribe application is therefore to decide
 which data we want to store in our entity model. We start with the customer:
 
 .. literalinclude:: ../plantscribe/entities/customer.py
+   :language: python
    :linenos: 
 
 In our example, the :class:`Customer` class inherits from the :class:`Entity`
@@ -137,21 +138,23 @@ of the underlying entities as attributes:
    :linenos:
 
 In the simple case where the resource attribute descriptor declares a public
-attribute of the underlying entity, it expects a type or an interface of the
-target object and the name of the corresponding entity attribute as arguments.
+attribute of the underlying entity, it expects the type (for terminal
+attributes) or the marker interface (for member and collection attributes) of
+the target object and the name of the corresponding entity attribute as
+arguments.
 
-For :func:`member_attribute` and :func:`collection_attribute` descriptors there
-is also an optional argument ``is_nested`` which determines if the URL for the
+The :func:`member_attribute` and :func:`collection_attribute` descriptors also
+support an optional argument ``is_nested`` which determines if the URL for the
 target resource is going to be formed relative to the root (i.e., as an
 absolute path) or relative to the parent resource declaring the attribute.
 
 .. sidebar:: URL resolution 
 
    :mod:`everest` favors and facilitates object traversal for URL resolution.
-   In particular, all resource attributes that target a member or collection
-   resource can be used directly for URL traversal unless they are specifically
-   set as non-nested resource in the corresponding resource attribute
-   declaration.
+   In particular, all resource attributes that target a collection resource 
+   can be used directly for URL traversal. For :func:`member_attribute` 
+   descriptors, the ``is_nested`` parameter needs to be enabled for the
+   traversal to work.
 
 We also have the possibility to declare resource attributes that do not
 reference the target resource directly through an entity attribute, but
@@ -185,7 +188,8 @@ resource repository (contains the initial data to load) and a ``Paster``
 application factory (responsible for creating and setting up the application
 registry and for instantiating a WSGI application), enables the
 ``Pyramid`` transaction manager (ensures a ``commit`` or ``rollback`` is
-issued at the end of each request) and configures the ``public`` folder inside
+issued at the end of each request) with the default commit veto supplied
+by :mod:`everest` and configures the ``public`` folder inside
 the deployment folder for static content.
 
 The remaining sections configure the server (``[server:main]``), the WSGI
@@ -198,13 +202,19 @@ Configuration
 
 .. sidebar:: The Zope Component Architecture (ZCA)
 
-   TBD
+   Originally developed for the Zope web application server, the ZCA is a 
+   framework for component based design of software applications. Components
+   are reusable objects with introspectable interfaces which can be configured
+   at runtime; this, for instance, makes it easy to substitute arbitrary
+   domain model classes with dummy versions for unit testing. An excellent 
+   introduction to the ZCA can be found 
+   `here http://www.muthukadan.net/docs/zca.html`. 
 
 :mod:`everest`, like :mod:`Pyramid`, makes extensive use of the Zope
 Component Architecture.
 
 The ``.zcml`` configuration file - which is loaded through the application
-factory - contains all high-level declarations for our ``plantscribe``
+factory - contains all high-level component declarations for our ``plantscribe``
 application:
 
 .. literalinclude:: ../plantscribe/configure.zcml
@@ -216,12 +226,15 @@ the :mod:`everest`-specific ``ZCML`` directives, but also the :mod:`Pyramid`
 directives as well.
 
 The ``filesystem_repository`` directive sets up a default resource repository
-in the file system. We will return to the topic of setting up and configuring
-resource repositories later.
+in the file system. A resource repository serves as an accessor for fetching
+resources from and storing resources to some persistency backend. We will
+return to the topic of setting up and configuring resource repositories later.
 
 The ``representer`` directive is used to define generic configuration values
-for representers. These provide defaults for subsequent representer
-configurations on a per-resource basis.
+for representers. Representers are used to convert resources to a representation
+of a particular MIME content type such as ``application/csv``. The generic
+representer configuration values provide defaults for subsequent representer
+configurations on a per-resource basis which we also discuss later in detail.
 
 The most important of the :mod:`everest`-specific declarations are made using
 the ``resource`` directive. In the example application, the resources are
@@ -286,8 +299,9 @@ options as the latter except for the following differences:
 * The ``for_`` option accepts not one, but any number of context specifiers.
   You can use also use resource interfaces here;
 * The ``request_method`` option has special meaning in the resource view
-  directives in that it determines the default :mod:`everest` view as outlined
-  in the following table:
+  directives in that, together with the value of the ``for_`` option, it
+  allows :mod:`everest` to determine which view class to use. The following
+  table shows the rules for this view autodetection feature:
 
   ========================= ===================== ========================
   **Context Resource Kind** **Request Method**    **Default View Class**
@@ -370,8 +384,15 @@ folder [#f2]_:
 
    $ cd webapps/plantscribe
    $ cp -R ~/git/everest-demo/schemata .
-   $ cp -R ~/git/everest-demo/plantscribe/tests/data .
    $ cp -R ~/git/everest-demo/plantscribe.ini .
+   
+If you want to start out with a few sample data rather than a completely empty
+repository, you can also copy the data folder from the unit testing tree into
+the deployment folder:
+
+.. code-block:: text
+
+   $ cp -R ~/git/everest-demo/plantscribe/tests/data . 
 
 Now, we can use the ``pshell`` interactive shell that comes with :mod:`Pyramid`
 to explore the ``plantscribe`` application interactively from the command
@@ -456,37 +477,41 @@ root collections are written back to their corresponding representation files.
 
 The filesystem-based repository does not perform well with complex or high
 volume data structures or in cases where several processes need to access the
-same persistency backend. In these situations, we need to switch to a an
-ORM-based repository. :mod:`everest` uses `SQLAlchemy <http://sqlalchemy.org>`_
-as ORM. What follows is a highly simplified account of what is needed to
-instruct ``SQLAlchemy`` to persist the entities of an :mod:`everest`
-application; for an explanation of the terms and concepts used in this section,
-please refer to the excellent documentation on the ``SQLAlchemy`` web site.
+same persistency backend. In these situations, we need to switch to a
+database repository. :mod:`everest` uses `SQLAlchemy <http://sqlalchemy.org>`_
+as ORM for relational database backends. What follows is a highly simplified
+account of what is needed to instruct ``SQLAlchemy`` to persist the entities
+of an :mod:`everest` application; for an explanation of the terms and concepts
+used in this section, please refer to the excellent documentation on the
+`SQLAlchemy web site <http://sqlalchemy.org/>`_ .
 
-In a first step, we need to initialize the ORM. The following ZCML declaration
-makes the ORM the default resource repository:
+In a first step, we need to initialize the relational database backend and the
+``ORM`` as shown in the following ``ZCML`` declaration (which also makes the
+``rdb`` repository the default repository):
 
 .. code-block:: text
 
-    <orm_repository
-        metadata_factory="everest.tests.testapp_db.db.create_metadata"
+    <rdb_repository
+        metadata_factory="plantscribe.create_metadata"
         make_default="true"/>
 
 The metadata factory setting references a callable that takes an ``SQLAlchemy``
 engine as a parameter and returns a fully initialized metadata instance. For
 our simple application, this function looks like this:
 
-.. literalinclude:: ../plantscribe/orm.py
+.. literalinclude:: ../plantscribe/rdb.py
    :linenos:
+   :lines: 53-
 
 The function first creates a database schema and then maps our entity classes to
 this schema. Note that a special mapper is used which provides a convenient way
 to map the special `id` and `slug` attributes required by :mod:`everest` to the
-ORM layer.
+``ORM`` layer.
 
 To use an engine other than the default in-memory SQLite database engine, you
 need to supply a ``db_string`` setting in the paster application ``.ini`` file.
-For example:
+For example, to use ``Postgres`` with the ``psycopg2`` adapter, you would use
+something like this:
 
 .. code-block:: text
 
@@ -508,10 +533,8 @@ Different resorces may use different repositories, but any given resource can
 only be assigned to one repository.
 
 
-
 .. rubric:: Footnotes
 
 .. [#f1] If you use ``easy_install`` as your package manager, the equivalent 
          invocation would be "``easy_install develop .``".
 .. [#f2] This step will eventually be automated with a paste script.
-         

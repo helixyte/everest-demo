@@ -1,23 +1,23 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Building everest applications &mdash; everest demo 0.1 documentation</title>
+    <title>Building everest applications &mdash; everest demo 1.0b2 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-2.3.0/css/bootstrap.min.css" type="text/css" />
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-2.3.0/css/bootstrap-responsive.min.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.1',
+        VERSION:     '1.0b2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,94 +26,54 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/bootstrap.js"></script>
-    <link rel="top" title="everest demo 0.1 documentation" href="index.html" />
+    <script type="text/javascript" src="_static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-2.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="top" title="everest demo 1.0b2 documentation" href="index.html" />
     <link rel="next" title="Using everest applications" href="using.html" />
     <link rel="prev" title="everest Tutorial" href="index.html" />
-<script type="text/javascript">
-(function () {
-  /**
-   * Patch TOC list.
-   *
-   * Will mutate the underlying span to have a correct ul for nav.
-   *
-   * @param $span: Span containing nested UL's to mutate.
-   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
-   */
-  var patchToc = function ($ul, minLevel) {
-    var findA;
-
-    // Find all a "internal" tags, traversing recursively.
-    findA = function ($elem, level) {
-      var level = level || 0,
-        $items = $elem.find("> li > a.internal, > ul, > li > ul");
-
-      // Iterate everything in order.
-      $items.each(function (index, item) {
-        var $item = $(item),
-          tag = item.tagName.toLowerCase(),
-          pad = 15 + ((level - minLevel) * 10);
-
-        if (tag === 'a' && level >= minLevel) {
-          // Add to existing padding.
-          $item.css('padding-left', pad + "px");
-          console.log(level, $item, 'padding-left', pad + "px");
-        } else if (tag === 'ul') {
-          // Recurse.
-          findA($item, level + 1);
-        }
-      });
-    };
-
-    console.log("HERE");
-    findA($ul);
-  };
-
-  $(document).ready(function () {
-    // Add styling, structure to TOC's.
-    $(".dropdown-menu").each(function () {
-      $(this).find("ul").each(function (index, item){
-        var $item = $(item);
-        $item.addClass('unstyled');
-      });
-      $(this).find("li").each(function () {
-        $(this).parent().append(this);
-      });
-    });
-
-    // Patch in level.
-    patchToc($("ul.globaltoc"), 2);
-    patchToc($("ul.localtoc"), 2);
-
-    // Enable dropdown.
-    $('.dropdown-toggle').dropdown();
-  });
-}());
-</script>
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
   <body>
+<div class="container">
+  
   <div id="navbar" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
-      <div class="container-fluid">
-        <a class="brand" href="index.html">everest demo</a>
-        <span class="navbar-text pull-left"><b>0.1</b></span>
-          <ul class="nav">
-            <li class="divider-vertical"></li>
-            
-              <li class="dropdown">
-  <a href="index.html" class="dropdown-toggle" data-toggle="dropdown">Site <b class="caret"></b></a>
-  <ul class="dropdown-menu globaltoc"><ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Building <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="using.html">Using <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a></li>
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <a class="brand" href="index.html">everest demo</a>
+      <span class="navbar-text pull-left"><b>1.0</b></span>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+          <li class="divider-vertical"></li>
+          
+            <li class="dropdown globaltoc-container">
+  <a href="index.html"
+     class="dropdown-toggle"
+     data-toggle="dropdown">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+    ><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Building <em>everest</em> applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">Using <em>everest</em> applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary of Terms</a></li>
 </ul>
 </ul>
 </li>
-              <li class="dropdown">
+            <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
   <ul class="dropdown-menu localtoc"><ul>
-<li><a class="reference internal" href="#">Building <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a><ul>
+<li><a class="reference internal" href="#">Building <em>everest</em> applications</a><ul>
 <li><a class="reference internal" href="#the-application">1. The application</a></li>
 <li><a class="reference internal" href="#designing-the-entity-model">2. Designing the entity model</a></li>
 <li><a class="reference internal" href="#designing-and-building-the-resource-layer">3. Designing and building the resource layer</a></li>
@@ -128,55 +88,37 @@
 </li>
 </ul>
 </ul>
-  <!--<span class="localtoc"><ul>
-<li><a class="reference internal" href="#">Building <tt class="docutils literal"><span class="pre">everest</span></tt> applications</a><ul>
-<li><a class="reference internal" href="#the-application">1. The application</a></li>
-<li><a class="reference internal" href="#designing-the-entity-model">2. Designing the entity model</a></li>
-<li><a class="reference internal" href="#designing-and-building-the-resource-layer">3. Designing and building the resource layer</a></li>
-<li><a class="reference internal" href="#configuring-the-application">4. Configuring the application</a><ul>
-<li><a class="reference internal" href="#settings">Settings</a></li>
-<li><a class="reference internal" href="#configuration">Configuration</a></li>
-</ul>
 </li>
-<li><a class="reference internal" href="#running-the-application">5. Running the application</a></li>
-<li><a class="reference internal" href="#adding-persistency">6. Adding persistency</a></li>
-</ul>
-</li>
-</ul>
-</span>-->
-</li>
-            
-            
-              
-  <li><a href="index.html"
-         title="previous chapter">&laquo; <tt class="docutils literal"><span class="pre">everest</span></tt> Tutorial</a></li>
-  <li><a href="using.html"
-         title="next chapter">Using <tt class="docutils literal"><span class="pre">everest</span></tt> applications &raquo;</a></li>
-            
-            
-              
-  <li><a href="_sources/building.txt"
-         rel="nofollow">Source</a></li>
-            
-          </ul>
+          
           
             
+  <li><a href="index.html"
+         title="previous chapter">&laquo; <em>everest</em> Tutorial</a></li>
+  <li><a href="using.html"
+         title="next chapter">Using <em>everest</em> applications &raquo;</a></li>
+          
+          
+            <li>
+  <a href="_sources/building.txt"
+     rel="nofollow">Source</a></li>
+          
+        </ul>
+
+        
+          
 <form class="navbar-search pull-right" style="margin-bottom:-3px;" action="search.html" method="get">
   <input type="text" name="q" placeholder="Search" />
   <input type="hidden" name="check_keywords" value="yes" />
   <input type="hidden" name="area" value="default" />
 </form>
-          
-          </ul>
-        </div>
+        
       </div>
     </div>
   </div>
 
-<div class="container">
-   
+  
   <div class="section" id="building-everest-applications">
-<h1>Building <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> applications<a class="headerlink" href="#building-everest-applications" title="Permalink to this headline">¶</a></h1>
+<h1>Building <em>everest</em> applications<a class="headerlink" href="#building-everest-applications" title="Permalink to this headline">¶</a></h1>
 <p>In this section, you will find a step-by-step guide on how to build a RESTful
 application with <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>.</p>
 <div class="section" id="the-application">
@@ -217,7 +159,8 @@ which data we want to store in our entity model. We start with the customer:</p>
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">everest.entities.base</span> <span class="kn">import</span> <span class="n">Entity</span>
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">everest.entities.base</span> <span class="kn">import</span> <span class="n">Entity</span>
 <span class="kn">from</span> <span class="nn">everest.entities.utils</span> <span class="kn">import</span> <span class="n">slug_from_string</span>
 
 <span class="k">class</span> <span class="nc">Customer</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
@@ -228,7 +171,8 @@ which data we want to store in our entity model. We start with the customer:</p>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">slug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">slug_from_string</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">slug_from_string</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>
+                                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 <p>In our example, the <tt class="xref py py-class docutils literal"><span class="pre">Customer</span></tt> class inherits from the <tt class="xref py py-class docutils literal"><span class="pre">Entity</span></tt>
@@ -604,19 +548,21 @@ of the underlying entities as attributes:</p>
 </pre></div>
 </td></tr></table></div>
 <p>In the simple case where the resource attribute descriptor declares a public
-attribute of the underlying entity, it expects a type or an interface of the
-target object and the name of the corresponding entity attribute as arguments.</p>
-<p>For <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptors there
-is also an optional argument <tt class="docutils literal"><span class="pre">is_nested</span></tt> which determines if the URL for the
+attribute of the underlying entity, it expects the type (for terminal
+attributes) or the marker interface (for member and collection attributes) of
+the target object and the name of the corresponding entity attribute as
+arguments.</p>
+<p>The <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptors also
+support an optional argument <tt class="docutils literal"><span class="pre">is_nested</span></tt> which determines if the URL for the
 target resource is going to be formed relative to the root (i.e., as an
 absolute path) or relative to the parent resource declaring the attribute.</p>
 <div class="sidebar">
 <p class="first sidebar-title">URL resolution</p>
 <p class="last"><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> favors and facilitates object traversal for URL resolution.
-In particular, all resource attributes that target a member or collection
-resource can be used directly for URL traversal unless they are specifically
-set as non-nested resource in the corresponding resource attribute
-declaration.</p>
+In particular, all resource attributes that target a collection resource
+can be used directly for URL traversal. For <tt class="xref py py-func docutils literal"><span class="pre">member_attribute()</span></tt>
+descriptors, the <tt class="docutils literal"><span class="pre">is_nested</span></tt> parameter needs to be enabled for the
+traversal to work.</p>
 </div>
 <p>We also have the possibility to declare resource attributes that do not
 reference the target resource directly through an entity attribute, but
@@ -645,6 +591,7 @@ file for the <tt class="docutils literal"><span class="pre">plantscribe</span></
 fs_directory = %(here)s/data
 paste.app_factory = plantscribe.run:app_factory
 pyramid.includes = pyramid_tm
+tm.commit_veto = everest.repositories.utils.commit_veto
 #folder for static content (e.g. your everest-flex application):
 public_dir = %(here)s/public
 
@@ -703,7 +650,8 @@ resource repository (contains the initial data to load) and a <tt class="docutil
 application factory (responsible for creating and setting up the application
 registry and for instantiating a WSGI application), enables the
 <tt class="docutils literal"><span class="pre">Pyramid</span></tt> transaction manager (ensures a <tt class="docutils literal"><span class="pre">commit</span></tt> or <tt class="docutils literal"><span class="pre">rollback</span></tt> is
-issued at the end of each request) and configures the <tt class="docutils literal"><span class="pre">public</span></tt> folder inside
+issued at the end of each request) with the default commit veto supplied
+by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> and configures the <tt class="docutils literal"><span class="pre">public</span></tt> folder inside
 the deployment folder for static content.</p>
 <p>The remaining sections configure the server (<tt class="docutils literal"><span class="pre">[server:main]</span></tt>), the WSGI
 application stack (<tt class="docutils literal"><span class="pre">[pipeline:main]</span></tt>) and the logging subsystem
@@ -714,12 +662,18 @@ application stack (<tt class="docutils literal"><span class="pre">[pipeline:main
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">The Zope Component Architecture (ZCA)</p>
-<p class="last">TBD</p>
+<p class="last">Originally developed for the Zope web application server, the ZCA is a
+framework for component based design of software applications. Components
+are reusable objects with introspectable interfaces which can be configured
+at runtime; this, for instance, makes it easy to substitute arbitrary
+domain model classes with dummy versions for unit testing. An excellent
+introduction to the ZCA can be found
+<cite>here http://www.muthukadan.net/docs/zca.html</cite>.</p>
 </div>
 <p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>, like <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt>, makes extensive use of the Zope
 Component Architecture.</p>
 <p>The <tt class="docutils literal"><span class="pre">.zcml</span></tt> configuration file - which is loaded through the application
-factory - contains all high-level declarations for our <tt class="docutils literal"><span class="pre">plantscribe</span></tt>
+factory - contains all high-level component declarations for our <tt class="docutils literal"><span class="pre">plantscribe</span></tt>
 application:</p>
 <div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -794,7 +748,9 @@ application:</p>
 71
 72
 73
-74</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;configure</span> <span class="na">xmlns=</span><span class="s">&quot;http://pylonshq.com/pyramid&quot;</span><span class="nt">&gt;</span>
+74
+75
+76</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;configure</span> <span class="na">xmlns=</span><span class="s">&quot;http://pylonshq.com/pyramid&quot;</span><span class="nt">&gt;</span>
 
     <span class="c">&lt;!-- Include special directives. --&gt;</span>
 
@@ -807,9 +763,11 @@ application:</p>
         <span class="na">content_type=</span><span class="s">&quot;everest.mime.CsvMime&quot;</span>
         <span class="na">make_default=</span><span class="s">&quot;true&quot;</span> <span class="nt">/&gt;</span>
 
-    <span class="c">&lt;!-- Use this to try out the SQL alchemy backend (you will need to comment </span>
-<span class="c">        out the filesystem_repository directive above) --&gt;</span>
-    <span class="c">&lt;!-- &lt;orm_repository metadata_factory=&#39;plantscribe.orm.create_metadata&#39; </span>
+    <span class="c">&lt;!-- Use this to try out the rdb backend </span>
+<span class="c">        (you will need to comment out the filesystem_repository </span>
+<span class="c">         directive above) --&gt;</span>
+    <span class="c">&lt;!-- &lt;rdb_repository </span>
+<span class="c">        metadata_factory=&#39;plantscribe.rdb.create_metadata&#39; </span>
 <span class="c">        make_default=&quot;true&quot; /&gt; --&gt;</span>
 
     <span class="c">&lt;!-- Representers. --&gt;</span>
@@ -874,11 +832,14 @@ application:</p>
 the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific <tt class="docutils literal"><span class="pre">ZCML</span></tt> directives, but also the <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt>
 directives as well.</p>
 <p>The <tt class="docutils literal"><span class="pre">filesystem_repository</span></tt> directive sets up a default resource repository
-in the file system. We will return to the topic of setting up and configuring
-resource repositories later.</p>
+in the file system. A resource repository serves as an accessor for fetching
+resources from and storing resources to some persistency backend. We will
+return to the topic of setting up and configuring resource repositories later.</p>
 <p>The <tt class="docutils literal"><span class="pre">representer</span></tt> directive is used to define generic configuration values
-for representers. These provide defaults for subsequent representer
-configurations on a per-resource basis.</p>
+for representers. Representers are used to convert resources to a representation
+of a particular MIME content type such as <tt class="docutils literal"><span class="pre">application/csv</span></tt>. The generic
+representer configuration values provide defaults for subsequent representer
+configurations on a per-resource basis which we also discuss later in detail.</p>
 <p>The most important of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific declarations are made using
 the <tt class="docutils literal"><span class="pre">resource</span></tt> directive. In the example application, the resources are
 declared in a separate <tt class="docutils literal"><span class="pre">ZCML</span></tt> file (only the declarations for the
@@ -1020,8 +981,9 @@ options as the latter except for the following differences:</p>
 You can use also use resource interfaces here;</p>
 </li>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">request_method</span></tt> option has special meaning in the resource view
-directives in that it determines the default <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> view as outlined
-in the following table:</p>
+directives in that, together with the value of the <tt class="docutils literal"><span class="pre">for_</span></tt> option, it
+allows <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to determine which view class to use. The following
+table shows the rules for this view autodetection feature:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="36%" />
@@ -1171,8 +1133,13 @@ $ mkdir webapps/plantscribe
 folder <a class="footnote-reference" href="#f2" id="id2">[2]</a>:</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cd webapps/plantscribe
 $ cp -R ~/git/everest-demo/schemata .
-$ cp -R ~/git/everest-demo/plantscribe/tests/data .
 $ cp -R ~/git/everest-demo/plantscribe.ini .
+</pre></div>
+</div>
+<p>If you want to start out with a few sample data rather than a completely empty
+repository, you can also copy the data folder from the unit testing tree into
+the deployment folder:</p>
+<div class="highlight-text"><div class="highlight"><pre>$ cp -R ~/git/everest-demo/plantscribe/tests/data .
 </pre></div>
 </div>
 <p>Now, we can use the <tt class="docutils literal"><span class="pre">pshell</span></tt> interactive shell that comes with <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt>
@@ -1244,189 +1211,87 @@ and during each <tt class="docutils literal"><span class="pre">commit</span></tt
 root collections are written back to their corresponding representation files.</p>
 <p>The filesystem-based repository does not perform well with complex or high
 volume data structures or in cases where several processes need to access the
-same persistency backend. In these situations, we need to switch to a an
-ORM-based repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses <a class="reference external" href="http://sqlalchemy.org">SQLAlchemy</a>
-as ORM. What follows is a highly simplified account of what is needed to
-instruct <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>
-application; for an explanation of the terms and concepts used in this section,
-please refer to the excellent documentation on the <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> web site.</p>
-<p>In a first step, we need to initialize the ORM. The following ZCML declaration
-makes the ORM the default resource repository:</p>
-<div class="highlight-text"><div class="highlight"><pre>&lt;orm_repository
-    metadata_factory=&quot;everest.tests.testapp_db.db.create_metadata&quot;
+same persistency backend. In these situations, we need to switch to a
+database repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses <a class="reference external" href="http://sqlalchemy.org">SQLAlchemy</a>
+as ORM for relational database backends. What follows is a highly simplified
+account of what is needed to instruct <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities
+of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> application; for an explanation of the terms and concepts
+used in this section, please refer to the excellent documentation on the
+<a class="reference external" href="http://sqlalchemy.org/">SQLAlchemy web site</a> .</p>
+<p>In a first step, we need to initialize the relational database backend and the
+<tt class="docutils literal"><span class="pre">ORM</span></tt> as shown in the following <tt class="docutils literal"><span class="pre">ZCML</span></tt> declaration (which also makes the
+<tt class="docutils literal"><span class="pre">rdb</span></tt> repository the default repository):</p>
+<div class="highlight-text"><div class="highlight"><pre>&lt;rdb_repository
+    metadata_factory=&quot;plantscribe.create_metadata&quot;
     make_default=&quot;true&quot;/&gt;
 </pre></div>
 </div>
 <p>The metadata factory setting references a callable that takes an <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt>
 engine as a parameter and returns a fully initialized metadata instance. For
 our simple application, this function looks like this:</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
- 10
- 11
- 12
- 13
- 14
- 15
- 16
- 17
- 18
- 19
- 20
- 21
- 22
- 23
- 24
- 25
- 26
- 27
- 28
- 29
- 30
- 31
- 32
- 33
- 34
- 35
- 36
- 37
- 38
- 39
- 40
- 41
- 42
- 43
- 44
- 45
- 46
- 47
- 48
- 49
- 50
- 51
- 52
- 53
- 54
- 55
- 56
- 57
- 58
- 59
- 60
- 61
- 62
- 63
- 64
- 65
- 66
- 67
- 68
- 69
- 70
- 71
- 72
- 73
- 74
- 75
- 76
- 77
- 78
- 79
- 80
- 81
- 82
- 83
- 84
- 85
- 86
- 87
- 88
- 89
- 90
- 91
- 92
- 93
- 94
- 95
- 96
- 97
- 98
- 99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115</pre></div></td><td class="code"><div class="highlight"><pre><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This file is part of the everest project. </span>
-<span class="sd">See LICENSE.txt for licensing, CONTRIBUTORS.txt for contributor information.</span>
-
-<span class="sd">Created on Mar 27, 2012.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">everest.orm</span> <span class="kn">import</span> <span class="n">as_slug_expression</span>
-<span class="kn">from</span> <span class="nn">everest.orm</span> <span class="kn">import</span> <span class="n">mapper</span>
-<span class="kn">from</span> <span class="nn">plantscribe.entities.customer</span> <span class="kn">import</span> <span class="n">Customer</span>
-<span class="kn">from</span> <span class="nn">plantscribe.entities.incidence</span> <span class="kn">import</span> <span class="n">Incidence</span>
-<span class="kn">from</span> <span class="nn">plantscribe.entities.project</span> <span class="kn">import</span> <span class="n">Project</span>
-<span class="kn">from</span> <span class="nn">plantscribe.entities.site</span> <span class="kn">import</span> <span class="n">Site</span>
-<span class="kn">from</span> <span class="nn">plantscribe.entities.species</span> <span class="kn">import</span> <span class="n">Species</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Float</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">ForeignKey</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Integer</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">MetaData</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">String</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Table</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">relationship</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">literal</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="kn">import</span> <span class="n">select</span>
-
-<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&#39;reStructuredText en&#39;</span>
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[]</span>
-
-
-<span class="k">def</span> <span class="nf">customer_slug</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">as_slug_expression</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">last_name</span> <span class="o">+</span> <span class="n">literal</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">cls</span><span class="o">.</span><span class="n">first_name</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">project_slug</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">as_slug_expression</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">species_slug</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">as_slug_expression</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">genus_name</span> <span class="o">+</span> <span class="n">literal</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span>
-                              <span class="n">cls</span><span class="o">.</span><span class="n">species_name</span> <span class="o">+</span> <span class="n">literal</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span>
-                              <span class="n">cls</span><span class="o">.</span><span class="n">cultivar</span> <span class="o">+</span> <span class="n">literal</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="o">+</span>
-                              <span class="n">cls</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">site_slug</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">as_slug_expression</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">incidence_slug</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-    <span class="k">return</span> \
-        <span class="n">select</span><span class="p">([</span><span class="n">Species</span><span class="o">.</span><span class="n">slug</span><span class="p">])</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">species_id</span> <span class="o">==</span> <span class="n">Species</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">as_scalar</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">create_metadata</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63</pre></div></td><td class="code"><div class="highlight"><pre><span class="k">def</span> <span class="nf">create_metadata</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
     <span class="c"># Create metadata.</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">()</span>
     <span class="c"># Define a database schema..</span>
@@ -1494,10 +1359,11 @@ our simple application, this function looks like this:</p>
 <p>The function first creates a database schema and then maps our entity classes to
 this schema. Note that a special mapper is used which provides a convenient way
 to map the special <cite>id</cite> and <cite>slug</cite> attributes required by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to the
-ORM layer.</p>
+<tt class="docutils literal"><span class="pre">ORM</span></tt> layer.</p>
 <p>To use an engine other than the default in-memory SQLite database engine, you
 need to supply a <tt class="docutils literal"><span class="pre">db_string</span></tt> setting in the paster application <tt class="docutils literal"><span class="pre">.ini</span></tt> file.
-For example:</p>
+For example, to use <tt class="docutils literal"><span class="pre">Postgres</span></tt> with the <tt class="docutils literal"><span class="pre">psycopg2</span></tt> adapter, you would use
+something like this:</p>
 <div class="highlight-text"><div class="highlight"><pre>[DEFAULT]
 db_server = mydbserver
 db_port = 5432
@@ -1535,9 +1401,12 @@ invocation would be &#8220;<tt class="docutils literal"><span class="pre">easy_i
 </div>
 <footer class="footer">
   <div class="container">
-    <p class="pull-right"><a href="#">Back to top</a></p>
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
     <p>
-        &copy; Copyright Copyright (c) 2011-2012 F. Oliver Gathmann, Cenix BioScience, Dresden, Germany .<br/>
+        &copy; Copyright Copyright (c) 2011-2013 F. Oliver Gathmann, Cenix BioScience, Dresden, Germany.<br/>
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.<br/>
     </p>
   </div>
