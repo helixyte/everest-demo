@@ -119,8 +119,8 @@
   
   <div class="section" id="building-everest-applications">
 <h1>Building <em>everest</em> applications<a class="headerlink" href="#building-everest-applications" title="Permalink to this headline">¶</a></h1>
-<p>In this section, you will find a step-by-step guide on how to build a RESTful
-application with <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>.</p>
+<p>In this section, you will find a step-by-step guide on how to build a
+<a href="#id1"><span class="problematic" id="id2">``</span></a>REST``ful application with <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>.</p>
 <div class="section" id="the-application">
 <h2>1. The application<a class="headerlink" href="#the-application" title="Permalink to this headline">¶</a></h2>
 <p>Suppose you want to write a program that helps a garden designer with composing
@@ -570,6 +570,11 @@ indirectly through a &#8220;backreferencing&#8221; attribute. In the example cod
 demonstrated in the <tt class="docutils literal"><span class="pre">projects</span></tt> attribute of the <tt class="xref py py-class docutils literal"><span class="pre">CustomerMember</span></tt>
 resource which allows us to access a customer&#8217;s projects at the resource level
 even though the underlying entity does not reference its projects directly.</p>
+<p>Note that every member resource class needs to have a <tt class="docutils literal"><span class="pre">relation</span></tt> attribute
+that uniquely identifies the class. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> maintains a mapping of
+resource interfaces to relation strings internally which is used e.g. for class
+hinting when parsing JSON representations (see
+<a class="reference internal" href="using.html#using-different-mime-content-types"><em>Using different MIME content types</em></a>).</p>
 </div>
 <div class="section" id="configuring-the-application">
 <h2>4. Configuring the application<a class="headerlink" href="#configuring-the-application" title="Permalink to this headline">¶</a></h2>
@@ -582,9 +587,9 @@ example on how to configure the extra resource functionality that
 <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> supplies.</p>
 <div class="section" id="settings">
 <h3>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h3>
-<p>Settings are used for configuration values that may have different values
-for each deployment and are kept in an <tt class="docutils literal"><span class="pre">.ini</span></tt> file. The default settings
-file for the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application looks like this:</p>
+<p>Settings are used for configuration values that may have
+different values for each deployment and are kept in an <tt class="docutils literal"><span class="pre">.ini</span></tt> file. The
+default settings file for the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application looks like this:</p>
 <div class="highlight-python"><pre>[DEFAULT]
 
 [app:plantscribe]
@@ -648,21 +653,21 @@ datefmt = %H:%M:%S
 <p>The <tt class="docutils literal"><span class="pre">[app:plantscribe]</span></tt> section specifies a file system directory for the
 resource repository (contains the initial data to load) and a <tt class="docutils literal"><span class="pre">Paster</span></tt>
 application factory (responsible for creating and setting up the application
-registry and for instantiating a WSGI application), enables the
-<tt class="docutils literal"><span class="pre">Pyramid</span></tt> transaction manager (ensures a <tt class="docutils literal"><span class="pre">commit</span></tt> or <tt class="docutils literal"><span class="pre">rollback</span></tt> is
-issued at the end of each request) with the default commit veto supplied
-by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> and configures the <tt class="docutils literal"><span class="pre">public</span></tt> folder inside
-the deployment folder for static content.</p>
-<p>The remaining sections configure the server (<tt class="docutils literal"><span class="pre">[server:main]</span></tt>), the WSGI
+registry and for instantiating a <tt class="docutils literal"><span class="pre">WSGI</span></tt> application), enables the <tt class="docutils literal"><span class="pre">Pyramid</span></tt>
+transaction manager (ensures a <tt class="docutils literal"><span class="pre">commit</span></tt> or <tt class="docutils literal"><span class="pre">rollback</span></tt> is issued at the end
+of each request) with the default commit veto supplied by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> and
+configures the <tt class="docutils literal"><span class="pre">public</span></tt> folder inside the deployment folder for static
+content.</p>
+<p>The remaining sections configure the server (<tt class="docutils literal"><span class="pre">[server:main]</span></tt>), the <tt class="docutils literal"><span class="pre">WSGI</span></tt>
 application stack (<tt class="docutils literal"><span class="pre">[pipeline:main]</span></tt>) and the logging subsystem
-(<tt class="docutils literal"><span class="pre">[loggers]</span></tt> and the following sections) in a manner typical for
-:mod:<tt class="docutils literal"><span class="pre">Pyramid</span></tt> applications.</p>
+(<tt class="docutils literal"><span class="pre">[loggers]</span></tt> and the following sections) in a manner typical for <tt class="docutils literal"><span class="pre">Pyramid</span></tt>
+applications.</p>
 </div>
 <div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
 <div class="sidebar">
-<p class="first sidebar-title">The Zope Component Architecture (ZCA)</p>
-<p class="last">Originally developed for the Zope web application server, the ZCA is a
+<p class="first sidebar-title">The Zope Component Architecture (<tt class="docutils literal"><span class="pre">ZCA</span></tt>)</p>
+<p class="last">Originally developed for the Zope web application server, the <tt class="docutils literal"><span class="pre">ZCA</span></tt> is a
 framework for component based design of software applications. Components
 are reusable objects with introspectable interfaces which can be configured
 at runtime; this, for instance, makes it easy to substitute arbitrary
@@ -670,8 +675,8 @@ domain model classes with dummy versions for unit testing. An excellent
 introduction to the ZCA can be found
 <cite>here http://www.muthukadan.net/docs/zca.html</cite>.</p>
 </div>
-<p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>, like <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt>, makes extensive use of the Zope
-Component Architecture.</p>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>, like <tt class="docutils literal"><span class="pre">Pyramid</span></tt>, makes extensive use of the Zope Component
+Architecture.</p>
 <p>The <tt class="docutils literal"><span class="pre">.zcml</span></tt> configuration file - which is loaded through the application
 factory - contains all high-level component declarations for our <tt class="docutils literal"><span class="pre">plantscribe</span></tt>
 application:</p>
@@ -829,15 +834,15 @@ application:</p>
 </pre></div>
 </td></tr></table></div>
 <p>Note the <tt class="docutils literal"><span class="pre">include</span></tt> directive at the top of the file; this not only pulls in
-the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific <tt class="docutils literal"><span class="pre">ZCML</span></tt> directives, but also the <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt>
+the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific <tt class="docutils literal"><span class="pre">ZCML</span></tt> directives, but also the <tt class="docutils literal"><span class="pre">Pyramid</span></tt>
 directives as well.</p>
 <p>The <tt class="docutils literal"><span class="pre">filesystem_repository</span></tt> directive sets up a default resource repository
 in the file system. A resource repository serves as an accessor for fetching
 resources from and storing resources to some persistency backend. We will
 return to the topic of setting up and configuring resource repositories later.</p>
-<p>The <tt class="docutils literal"><span class="pre">representer</span></tt> directive is used to define generic configuration values
-for representers. Representers are used to convert resources to a representation
-of a particular MIME content type such as <tt class="docutils literal"><span class="pre">application/csv</span></tt>. The generic
+<p>The <tt class="docutils literal"><span class="pre">representer</span></tt> directive is used to define generic configuration values for
+representers. Representers are used to convert resources to a representation of
+a particular <tt class="docutils literal"><span class="pre">MIME</span></tt> content type such as <tt class="docutils literal"><span class="pre">application/csv</span></tt>. The generic
 representer configuration values provide defaults for subsequent representer
 configurations on a per-resource basis which we also discuss later in detail.</p>
 <p>The most important of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific declarations are made using
@@ -961,21 +966,21 @@ root collection name. Non-exposed resources will still be available as a root
 collection internally, but access through the service as well as the generation
 of absolute URLs for them will not work.</p>
 <p>Each <tt class="docutils literal"><span class="pre">resource</span></tt> directive may contain one or several <tt class="docutils literal"><span class="pre">representer</span></tt>
-directives which specify how this resource should be converted to a
-particular MIME content type representation and vice versa. You always need
-to specify the <tt class="docutils literal"><span class="pre">content_type</span></tt> (MIME type); in addition, you may specify
-the resource <tt class="docutils literal"><span class="pre">kind</span></tt> to configure as either &#8220;<tt class="docutils literal"><span class="pre">member</span></tt>&#8221; or &#8220;<tt class="docutils literal"><span class="pre">collection</span></tt>
-to indicate that the following declarations should only apply to the member
-or collection representer for the enclosing resource, respectively. The
-representer configuration is specified using one or several <tt class="docutils literal"><span class="pre">option</span></tt> tags
-which have a <tt class="docutils literal"><span class="pre">name</span></tt>, a <tt class="docutils literal"><span class="pre">value</span></tt> and an optional <tt class="docutils literal"><span class="pre">type</span></tt> attribute.
-Individual resource attributes can be configured using
-<tt class="docutils literal"><span class="pre">attribute</span></tt> tags. We will explain this feature in more detail later.</p>
+directives which specify how this resource should be converted to a particular
+<tt class="docutils literal"><span class="pre">MIME</span></tt> content type representation and vice versa. You always need to specify
+the <tt class="docutils literal"><span class="pre">content_type</span></tt> (<tt class="docutils literal"><span class="pre">MIME</span></tt> type); in addition, you may specify the resource
+<tt class="docutils literal"><span class="pre">kind</span></tt> to configure as either &#8220;<tt class="docutils literal"><span class="pre">member</span></tt>&#8221; or &#8220;<tt class="docutils literal"><span class="pre">collection</span></tt> to indicate
+that the following declarations should only apply to the member or collection
+representer for the enclosing resource, respectively. The representer
+configuration is specified using one or several <tt class="docutils literal"><span class="pre">option</span></tt> tags which have a
+<tt class="docutils literal"><span class="pre">name</span></tt>, a <tt class="docutils literal"><span class="pre">value</span></tt> and an optional <tt class="docutils literal"><span class="pre">type</span></tt> attribute. Individual resource
+attributes can be configured using <tt class="docutils literal"><span class="pre">attribute</span></tt> tags. We will explain this
+feature in more detail later.</p>
 <p>With the resources fully configured, we can now move to the view declarations.
 <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> provides three view directives, <tt class="docutils literal"><span class="pre">resource_view</span></tt>,
 <tt class="docutils literal"><span class="pre">member_view</span></tt>, and <tt class="docutils literal"><span class="pre">collection_view</span></tt>. All three are convenience wrappers
-around the standard <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt> view declaration and accept the same
-options as the latter except for the following differences:</p>
+around the standard <tt class="docutils literal"><span class="pre">Pyramid</span></tt> view declaration and accept the same options as
+the latter except for the following differences:</p>
 <ul>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">for_</span></tt> option accepts not one, but any number of context specifiers.
 You can use also use resource interfaces here;</p>
@@ -1049,7 +1054,7 @@ method arguments in one view declaration to register the associated view
 for each request method in a single directive.</p>
 <p>In addition to the default view, named views are registered for all builtin
 representers so that the client can address representations of different
-MIME content types directly using a URL suffix:</p>
+<tt class="docutils literal"><span class="pre">MIME</span></tt> content types directly using a <tt class="docutils literal"><span class="pre">URL</span></tt> suffix:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="27%" />
@@ -1097,9 +1102,9 @@ MIME content types directly using a URL suffix:</p>
 </tbody>
 </table>
 </li>
-<li><p class="first">The <tt class="docutils literal"><span class="pre">default_content_type</span></tt> option determines the MIME type of the
-representation returned in the response when the client does not indicate
-a preference.</p>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">default_content_type</span></tt> option determines the <tt class="docutils literal"><span class="pre">MIME</span></tt> type of the
+representation returned in the response when the client does not indicate a
+preference.</p>
 </li>
 </ul>
 <p>There is only one difference between the three custom <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> view
@@ -1122,7 +1127,7 @@ latest sources for the <tt class="xref py py-mod docutils literal"><span class="
 <div class="highlight-text"><div class="highlight"><pre>$ pip install -e .
 </pre></div>
 </div>
-<p>inside the root folder of the <tt class="docutils literal"><span class="pre">everest-demo</span></tt> project <a class="footnote-reference" href="#f1" id="id1">[1]</a> .</p>
+<p>inside the root folder of the <tt class="docutils literal"><span class="pre">everest-demo</span></tt> project <a class="footnote-reference" href="#f1" id="id3">[1]</a> .</p>
 <p>Next, set up a deployment folder of your liking, e.g.</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cd
 $ mkdir webapps
@@ -1130,7 +1135,7 @@ $ mkdir webapps/plantscribe
 </pre></div>
 </div>
 <p>and populate it with the following files from the <tt class="docutils literal"><span class="pre">everest-demo</span></tt> project
-folder <a class="footnote-reference" href="#f2" id="id2">[2]</a>:</p>
+folder <a class="footnote-reference" href="#f2" id="id4">[2]</a> :</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cd webapps/plantscribe
 $ cp -R ~/git/everest-demo/schemata .
 $ cp -R ~/git/everest-demo/plantscribe.ini .
@@ -1142,9 +1147,9 @@ the deployment folder:</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cp -R ~/git/everest-demo/plantscribe/tests/data .
 </pre></div>
 </div>
-<p>Now, we can use the <tt class="docutils literal"><span class="pre">pshell</span></tt> interactive shell that comes with <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt>
-to explore the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application interactively from the command
-line like this:</p>
+<p>Now, we can use the <tt class="docutils literal"><span class="pre">pshell</span></tt> interactive shell that comes with <tt class="docutils literal"><span class="pre">Pyramid</span></tt> to
+explore the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application interactively from the command line
+like this:</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cd webapps/plantscribe
 $ pshell plantscribe.ini
 Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)
@@ -1179,15 +1184,15 @@ the collection:</p>
 &#39;fox-peter&#39;
 </pre></div>
 </div>
-<p>To run the server, exit the pshell (CTRL-D) and use the <tt class="docutils literal"><span class="pre">paster</span></tt> command
+<p>To run the server, exit the pshell (<tt class="docutils literal"><span class="pre">CTRL-D</span></tt>) and use the <tt class="docutils literal"><span class="pre">paster</span></tt> command
 from the command line:</p>
 <div class="highlight-text"><div class="highlight"><pre>$ paster serve plantscribe.ini
 </pre></div>
 </div>
 <p>With a tool like the excellent
-<a class="reference external" href="http://code.google.com/p/rest-client/">REST client</a> you can now explore
-the server response for various REST requests, e.g. a simple GET request to
-the URL <cite>http://localhost:5432/customers</cite>.</p>
+<a class="reference external" href="http://code.google.com/p/rest-client/">REST client</a> you can now explore the
+server response for various <tt class="docutils literal"><span class="pre">REST</span></tt> requests, e.g. a simple <tt class="docutils literal"><span class="pre">GET</span></tt> request to
+the <tt class="docutils literal"><span class="pre">URL</span></tt> <tt class="docutils literal"><span class="pre">http://localhost:5432/customers</span></tt>.</p>
 </div>
 <div class="section" id="adding-persistency">
 <h2>6. Adding persistency<a class="headerlink" href="#adding-persistency" title="Permalink to this headline">¶</a></h2>
@@ -1211,12 +1216,12 @@ and during each <tt class="docutils literal"><span class="pre">commit</span></tt
 root collections are written back to their corresponding representation files.</p>
 <p>The filesystem-based repository does not perform well with complex or high
 volume data structures or in cases where several processes need to access the
-same persistency backend. In these situations, we need to switch to a
-database repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses <a class="reference external" href="http://sqlalchemy.org">SQLAlchemy</a>
-as ORM for relational database backends. What follows is a highly simplified
-account of what is needed to instruct <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities
-of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> application; for an explanation of the terms and concepts
-used in this section, please refer to the excellent documentation on the
+same persistency backend. In these situations, we need to switch to a database
+repository. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> as <tt class="docutils literal"><span class="pre">ORM</span></tt> for relational
+database backends. What follows is a highly simplified account of what is
+needed to instruct <tt class="docutils literal"><span class="pre">SQLAlchemy</span></tt> to persist the entities of an <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>
+application; for an explanation of the terms and concepts used in this section,
+please refer to the excellent documentation on the
 <a class="reference external" href="http://sqlalchemy.org/">SQLAlchemy web site</a> .</p>
 <p>In a first step, we need to initialize the relational database backend and the
 <tt class="docutils literal"><span class="pre">ORM</span></tt> as shown in the following <tt class="docutils literal"><span class="pre">ZCML</span></tt> declaration (which also makes the
@@ -1360,10 +1365,10 @@ our simple application, this function looks like this:</p>
 this schema. Note that a special mapper is used which provides a convenient way
 to map the special <cite>id</cite> and <cite>slug</cite> attributes required by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to the
 <tt class="docutils literal"><span class="pre">ORM</span></tt> layer.</p>
-<p>To use an engine other than the default in-memory SQLite database engine, you
-need to supply a <tt class="docutils literal"><span class="pre">db_string</span></tt> setting in the paster application <tt class="docutils literal"><span class="pre">.ini</span></tt> file.
-For example, to use <tt class="docutils literal"><span class="pre">Postgres</span></tt> with the <tt class="docutils literal"><span class="pre">psycopg2</span></tt> adapter, you would use
-something like this:</p>
+<p>To use an engine other than the default in-memory <tt class="docutils literal"><span class="pre">SQLite</span></tt> database engine,
+you need to supply a <tt class="docutils literal"><span class="pre">db_string</span></tt> setting in the paster application <tt class="docutils literal"><span class="pre">.ini</span></tt>
+file. For example, to use <tt class="docutils literal"><span class="pre">Postgres</span></tt> with the <tt class="docutils literal"><span class="pre">psycopg2</span></tt> adapter, you would
+use something like this:</p>
 <div class="highlight-text"><div class="highlight"><pre>[DEFAULT]
 db_server = mydbserver
 db_port = 5432
@@ -1384,14 +1389,14 @@ only be assigned to one repository.</p>
 <table class="docutils footnote" frame="void" id="f1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>If you use <tt class="docutils literal"><span class="pre">easy_install</span></tt> as your package manager, the equivalent
+<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>If you use <tt class="docutils literal"><span class="pre">easy_install</span></tt> as your package manager, the equivalent
 invocation would be &#8220;<tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">develop</span> <span class="pre">.</span></tt>&#8221;.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>This step will eventually be automated with a paste script.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id4">[2]</a></td><td>This step will eventually be automated with a paste script.</td></tr>
 </tbody>
 </table>
 </div>

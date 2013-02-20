@@ -74,12 +74,12 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
   <ul class="dropdown-menu localtoc"><ul>
 <li><a class="reference internal" href="#">Using <em>everest</em> applications</a><ul>
-<li><a class="reference internal" href="#querying-with-get">1. Querying with GET</a><ul>
-<li><a class="reference internal" href="#the-collection-query-language-cql">The Collection Query Language (CQL)</a></li>
-<li><a class="reference internal" href="#get-request-processing">GET request processing</a></li>
+<li><a class="reference internal" href="#querying-with-get">1. Querying with GET</a></li>
+<li><a class="reference internal" href="#customizing-representations">2. Customizing representations</a><ul>
+<li><a class="reference internal" href="#customizing-resource-attribute-representation">Customizing resource attribute representation</a></li>
+<li><a class="reference internal" href="#using-different-mime-content-types">Using different MIME content types</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#customizing-representations">2. Customizing representations</a></li>
 </ul>
 </li>
 </ul>
@@ -117,25 +117,22 @@
 <h1>Using <em>everest</em> applications<a class="headerlink" href="#using-everest-applications" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="querying-with-get">
 <h2>1. Querying with GET<a class="headerlink" href="#querying-with-get" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="the-collection-query-language-cql">
-<h3>The Collection Query Language (CQL)<a class="headerlink" href="#the-collection-query-language-cql" title="Permalink to this headline">¶</a></h3>
-<p>One of the main features of the collection resources in <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> are
-their advanced filtering, ordering and batching capabilities. Query strings
-have to conform to a custom query language, the Collection Query Language
-(CQL).</p>
-<p>A CQL query consists of a filtering part, an ordering part, and a batching
+<p>One of the main features of the collection resources in <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> are their
+advanced filtering, ordering and batching capabilities. Query strings have to
+conform to a custom query language, the Collection Query Language (<tt class="docutils literal"><span class="pre">CQL</span></tt>).</p>
+<p>A <tt class="docutils literal"><span class="pre">CQL</span></tt> query consists of a filtering part, an ordering part, and a batching
 part. All parts are optional; if they are omitted, the collection is returned
-unfiltered using the default sort order and the default batch size defined
-by the collection (if specified).</p>
-<p>The filtering part of a CQL query (prefixed with the string <tt class="docutils literal"><span class="pre">q=</span></tt>) consists of
-one or more criteria of the form</p>
+unfiltered using the default sort order and the default batch size defined by
+the collection (if specified).</p>
+<p>The filtering part of a <tt class="docutils literal"><span class="pre">CQL</span></tt> query (prefixed with the string <tt class="docutils literal"><span class="pre">q=</span></tt>) consists
+of one or more criteria of the form</p>
 <blockquote>
 <div><tt class="docutils literal"><span class="pre">resource</span> <span class="pre">attribute</span> <span class="pre">name</span> <span class="pre">&quot;:&quot;</span> <span class="pre">operator</span> <span class="pre">&quot;:&quot;</span> <span class="pre">value</span></tt></div></blockquote>
 <p>Example: <tt class="docutils literal"><span class="pre">last-name:equal-to:&quot;Doe&quot;</span></tt></p>
 <p>It is possible to supply multiple criterion values in a comma separated
 list, which will be interpreted as a Boolean &#8220;OR&#8221; operation on all given
 values.</p>
-<p>Supported types for a CQL criterion value are:</p>
+<p>Supported types for a <tt class="docutils literal"><span class="pre">CQL</span></tt> criterion value are:</p>
 <dl class="docutils">
 <dt>String</dt>
 <dd>Arbitrary string enclosed in double quotes.</dd>
@@ -144,31 +141,31 @@ values.</p>
 <dt>Boolean</dt>
 <dd>Case insensitive string <strong>true</strong> or <strong>false</strong>.</dd>
 <dt>Date/Time</dt>
-<dd>ISO 8601 encoded string enclosed in double quotes.</dd>
+<dd><tt class="docutils literal"><span class="pre">ISO</span> <span class="pre">8601</span></tt> encoded string enclosed in double quotes.</dd>
 <dt>Resource</dt>
-<dd>URL referencing a resource.</dd>
+<dd><tt class="docutils literal"><span class="pre">URL</span></tt> referencing a resource.</dd>
 </dl>
-<p>The ordering part of a CQL query (prefixed with the string <tt class="docutils literal"><span class="pre">sort=</span></tt>)
+<p>The ordering part of a <tt class="docutils literal"><span class="pre">CQL</span></tt> query (prefixed with the string <tt class="docutils literal"><span class="pre">sort=</span></tt>)
 consists of one or more order criteria of the form</p>
 <blockquote>
 <div><tt class="docutils literal"><span class="pre">resource</span> <span class="pre">attribute</span> <span class="pre">name</span> <span class="pre">&quot;:&quot;</span> <span class="pre">operator</span></tt></div></blockquote>
 <p>where the operator is one of <tt class="docutils literal"><span class="pre">asc</span></tt> (ascending sort order) or <tt class="docutils literal"><span class="pre">desc</span></tt>
 (descending sort order).</p>
 <p>Example: <tt class="docutils literal"><span class="pre">last-name:asc</span></tt></p>
-<p>In filtering and ordering query expressions, you can specify a dotted
-identifier as the resource attribute name to query nested resources. Also,
-multiple CQL filter and order criteria can be combined using the two logical
-operators &#8220;<cite>AND</cite>&#8221; and &#8220;<cite>OR</cite>&#8221;. &#8220;<cite>AND</cite>&#8221; expressions have precedence over
-&#8220;<cite>OR</cite>&#8221; expressions. The precedence rules can be overridden using open and
-close parentheses (&#8220;<cite>(</cite>&#8221; and &#8220;<cite>)</cite>&#8221;). Using the tilde (&#8220;~&#8221;) character as a
-shorthand for the &#8220;<cite>AND</cite>&#8221; operator is also supported; note, however, that you
+<p>In filtering and ordering query expressions, you can specify a dotted identifier
+as the resource attribute name to query nested resources. Also, multiple
+<tt class="docutils literal"><span class="pre">CQL</span></tt> filter and order criteria can be combined using the two logical
+operators <tt class="docutils literal"><span class="pre">AND</span></tt> and <tt class="docutils literal"><span class="pre">OR</span></tt>. <tt class="docutils literal"><span class="pre">AND</span></tt> expressions have precedence over <tt class="docutils literal"><span class="pre">OR</span></tt>
+expressions. The precedence rules can be overridden using open and close
+parentheses (&#8220;<tt class="docutils literal"><span class="pre">(</span></tt>&#8221; and &#8220;<tt class="docutils literal"><span class="pre">)</span></tt>&#8221;). Using the tilde (&#8220;<tt class="docutils literal"><span class="pre">~</span></tt>&#8221;) character as a
+shorthand for the <tt class="docutils literal"><span class="pre">AND</span></tt> operator is also supported; note, however, that you
 can not combine a criteria expression that uses the tilde character with one
-that uses the standard <cite>AND</cite> and <cite>OR</cite> operators.</p>
-<p>The batching part of a CQL query can be used to specify a batch size (with
-an expression of the form <tt class="docutils literal"><span class="pre">&quot;size&quot;</span> <span class="pre">&quot;=&quot;</span> <span class="pre">batch</span> <span class="pre">size</span></tt> where <tt class="docutils literal"><span class="pre">batch</span> <span class="pre">size</span></tt> is
-an integer) and a batch number (with an expression of the form
+that uses the standard <tt class="docutils literal"><span class="pre">AND</span></tt> and <tt class="docutils literal"><span class="pre">OR</span></tt> operators.</p>
+<p>The batching part of a <tt class="docutils literal"><span class="pre">CQL</span></tt> query can be used to specify a batch size (with
+an expression of the form <tt class="docutils literal"><span class="pre">&quot;size&quot;</span> <span class="pre">&quot;=&quot;</span> <span class="pre">batch</span> <span class="pre">size</span></tt> where <tt class="docutils literal"><span class="pre">batch</span> <span class="pre">size</span></tt> is an
+integer) and a batch number (with an expression of the form
 <tt class="docutils literal"><span class="pre">&quot;offset&quot;</span> <span class="pre">&quot;=&quot;</span> <span class="pre">batch</span> <span class="pre">offset</span></tt> where <tt class="docutils literal"><span class="pre">batch</span> <span class="pre">offset</span></tt> is an integer).</p>
-<p>The following table shows the available operators and data types in CQL:</p>
+<p>The following table shows the available operators and data types in <tt class="docutils literal"><span class="pre">CQL</span></tt>:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="42%" />
@@ -298,27 +295,26 @@ an integer) and a batch number (with an expression of the form
 </tr>
 </tbody>
 </table>
-<p>All attributes that are used to compose a query expression need to be mapped
-column properties in the ORM. Aliases are supported, CompositeProperties are
-not. All queried entities must have an &#8220;id&#8221; attribute.</p>
-<p>It is by design that the power of CQL to express complex queries is far behind
-that of SQL. CQL aims to provide a simple, uniform querying language for
-all collection resources of an applciation regardless of the persistency
-backend used.</p>
-</div>
-<div class="section" id="get-request-processing">
-<h3>GET request processing<a class="headerlink" href="#get-request-processing" title="Permalink to this headline">¶</a></h3>
+<p>For resources that use the rdb repository, all attributes that are used to
+compose a query expression need to be mapped column properties in the <tt class="docutils literal"><span class="pre">ORM</span></tt>.
+You can also use synonyms of mapped columns (<tt class="docutils literal"><span class="pre">sqlalchemy.orm.synonym</span></tt>);
+composite column properties (<tt class="docutils literal"><span class="pre">sqlalchemy.orm.composite</span></tt>) are not supported.</p>
+<p>It is by design that the power of <tt class="docutils literal"><span class="pre">CQL</span></tt> to express complex queries is far
+behind that of <tt class="docutils literal"><span class="pre">SQL</span></tt>. <tt class="docutils literal"><span class="pre">CQL</span></tt> aims to provide a simple, uniform querying
+language for all collection resources of an applciation regardless of the
+persistency backend used.</p>
+<div class="sidebar">
+<p class="first sidebar-title">GET request processing</p>
 <p>A GET request to a collection resource with a query string such as</p>
 <p><a class="reference external" href="http://localhost:6543/customers?q=first-name:startswith:&quot;J&quot;?order=last-name:asc?size=100">http://localhost:6543/customers?q=first-name:startswith:&#8221;J&#8221;?order=last-name:asc?size=100</a></p>
 <p>is processed by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> as follows:</p>
-<blockquote>
-<div><ol class="arabic simple">
+<ol class="last arabic simple">
 <li>The context and its associated view are identified just as in any vanilla
 <tt class="xref py py-mod docutils literal"><span class="pre">Pyramid</span></tt> application. In the example, this would be the <tt class="docutils literal"><span class="pre">customers</span></tt>
 collection resource at the root of the object tree (the &#8220;root collection&#8221;)
 and the <tt class="xref py py-class docutils literal"><span class="pre">everest.views.getcollection.GetCollectionView</span></tt>;</li>
 <li>The view parses the query string submitted by the client (in the example,
-the <tt class="docutils literal"><span class="pre">q=first-name:startswith:&quot;J&quot;</span></tt> part of the URL) into a resource
+the <tt class="docutils literal"><span class="pre">q=first-name:startswith:&quot;J&quot;</span></tt> part of the <tt class="docutils literal"><span class="pre">URL</span></tt>) into a resource
 filter specification and applies it to the context collection resource.
 This triggers a translation of the resource filter specification into
 an entity filter specification which is then applied to the underlying
@@ -340,22 +336,27 @@ or statically defined for the resource) from the result collection;</li>
 response headers and returns the response for further processing through
 the WSGI stack.</li>
 </ol>
-</div></blockquote>
 </div>
 </div>
 <div class="section" id="customizing-representations">
 <h2>2. Customizing representations<a class="headerlink" href="#customizing-representations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="customizing-resource-attribute-representation">
+<h3>Customizing resource attribute representation<a class="headerlink" href="#customizing-resource-attribute-representation" title="Permalink to this headline">¶</a></h3>
 <p>The default behavior of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> representers is to</p>
 <blockquote>
 <div><ul class="simple">
-<li>Represent all terminal attribute values as the value obtained by result of ;</li>
-<li>Represent nested member resources as links (URLs); and</li>
+<li>Represent all terminal attribute values as the value obtained by converting
+the attribute value object to a string;</li>
+<li>Represent nested member resources as links (<a href="#id1"><span class="problematic" id="id2">``</span></a>URL``s); and</li>
 <li>Ignore nested collection resources.</li>
 </ul>
 </div></blockquote>
 <p>Nested collections are ignored by default because retrieving a collection can
-be very expensive and even generating a URL for a collection typically requires
-iterating over all its members.</p>
+be very expensive and even just generating a <tt class="docutils literal"><span class="pre">URL</span></tt> for a collection requires
+iterating over all its members. The exception to this rule is when the
+nested collection can be specified using a &#8220;backreference&#8221; from its members
+to the parent resource, defined in the <tt class="docutils literal"><span class="pre">backref</span></tt> argument to the
+<tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptor).</p>
 <p>To change these defaults for a given resource attribute, we set the appropriate
 <tt class="docutils literal"><span class="pre">representer</span></tt>, <tt class="docutils literal"><span class="pre">attribute</span></tt> and <tt class="docutils literal"><span class="pre">option</span></tt> tags inside a <tt class="docutils literal"><span class="pre">resource</span></tt>
 declaration. For example, to include the nested <tt class="docutils literal"><span class="pre">projects</span></tt> collection in
@@ -379,9 +380,46 @@ following declaration in the <tt class="docutils literal"><span class="pre">ZCML
 <p>The <tt class="docutils literal"><span class="pre">ignore</span></tt> option is a shorthand for setting both the <tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>
 and the <tt class="docutils literal"><span class="pre">ignore_on_write</span></tt> option which set the ignore behavior selectively
 when a representation is parsed (<tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>) or generated
-(<tt class="docutils literal"><span class="pre">ignore_on_write</span></tt>). The <tt class="docutils literal"><span class="pre">write_as_link</span></tt> option ensures that the nested
-resource is represented as a (URL) link rather than as an explicit
-recursive representation of all its attributes.</p>
+(<tt class="docutils literal"><span class="pre">ignore_on_write</span></tt>). The <tt class="docutils literal"><span class="pre">write_as_link</span></tt> option specifies whether the
+resource attribute is represented as a (<tt class="docutils literal"><span class="pre">URL</span></tt>) link (option value set to
+&#8220;<cite>true</cite>&#8221;) or in its &#8220;expanded&#8221; form with all its (nested) resource attributes
+represented (option value set to &#8220;<cite>false</cite>&#8221;. If you choose to expand a
+resource attribute, by default only its terminal nested attributes will be
+included in the representation. To include nested member and collection
+attributes (either as a link or, recursively, expanded) you need to provide
+another <cite>attribute</cite> tag using a dotted attribute name. For example, adding
+the following tag inside the <cite>representer</cite> tag above will cause the <cite>sites</cite>
+attribute of the customer&#8217;s <cite>projects</cite> attribute to be included as a link:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects.sites&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span>
+        <span class="na">name=</span><span class="s">&quot;ignore&quot;</span>
+        <span class="na">value=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/attribute&gt;</span>
+</pre></div>
+</div>
+<p>There is no limit to the nesting depth of such dotted attribute configuration
+tags.</p>
+<p>It is perhaps most instructive to think of these attribute configurations as a
+way to prune the branches of a resource data tree when building a
+representation of the latter.</p>
+</div>
+<div class="section" id="using-different-mime-content-types">
+<span id="id3"></span><h3>Using different MIME content types<a class="headerlink" href="#using-different-mime-content-types" title="Permalink to this headline">¶</a></h3>
+<p>Unless specified otherwise, <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> assumes a default <tt class="docutils literal"><span class="pre">MIME</span></tt> content
+type of <tt class="docutils literal"><span class="pre">application/csv</span></tt> for reading and writing resource representations.
+The <tt class="docutils literal"><span class="pre">CSV</span></tt> <tt class="docutils literal"><span class="pre">MIME</span></tt> type, however, is rather limited with respect to
+representing hierarchical data structures; it only supports at most one
+collection attribute to be represented in expanded form.</p>
+<p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> also offers <tt class="docutils literal"><span class="pre">JSON</span></tt> (<tt class="docutils literal"><span class="pre">MIME</span></tt> type <tt class="docutils literal"><span class="pre">application/json</span></tt>) and
+<tt class="docutils literal"><span class="pre">XML</span></tt> (<tt class="docutils literal"><span class="pre">MIME</span></tt> type <tt class="docutils literal"><span class="pre">application/xml</span></tt>) representers as alternatives to
+<tt class="docutils literal"><span class="pre">CSV</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">JSON</span></tt> representer supports <tt class="docutils literal"><span class="pre">JSON-RPC</span></tt> style class hinting by setting
+the <tt class="docutils literal"><span class="pre">__jsonclass__</span></tt> attribute to the value specified in the <tt class="docutils literal"><span class="pre">relation</span></tt>
+attribute of the member class when a representation is created. Likewise, when
+an incoming representation is parsed, the value of the <tt class="docutils literal"><span class="pre">__jsonclass__</span></tt>
+attribute is used to look up the class to use for constructing resource member
+objects.</p>
+</div>
 </div>
 </div>
 

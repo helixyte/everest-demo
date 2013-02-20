@@ -1,8 +1,8 @@
 Building *everest* applications
 ===============================
 
-In this section, you will find a step-by-step guide on how to build a RESTful
-application with :mod:`everest`.
+In this section, you will find a step-by-step guide on how to build a
+``REST``ful application with :mod:`everest`.
 
 
 1. The application
@@ -163,6 +163,12 @@ demonstrated in the ``projects`` attribute of the :class:`CustomerMember`
 resource which allows us to access a customer's projects at the resource level
 even though the underlying entity does not reference its projects directly.
 
+Note that every member resource class needs to have a ``relation`` attribute
+that uniquely identifies the class. :mod:`everest` maintains a mapping of
+resource interfaces to relation strings internally which is used e.g. for class
+hinting when parsing JSON representations (see
+:ref:`using-different-mime-content-types`).
+
 
 4. Configuring the application
 ------------------------------
@@ -176,33 +182,34 @@ example on how to configure the extra resource functionality that
 :mod:`everest` supplies.
 
 Settings
-""""""""
-Settings are used for configuration values that may have different values
-for each deployment and are kept in an ``.ini`` file. The default settings
-file for the ``plantscribe`` application looks like this:
+^^^^^^^^
+
+Settings are used for configuration values that may have
+different values for each deployment and are kept in an ``.ini`` file. The
+default settings file for the ``plantscribe`` application looks like this:
 
 .. literalinclude:: ../plantscribe.ini
 
 The ``[app:plantscribe]`` section specifies a file system directory for the
 resource repository (contains the initial data to load) and a ``Paster``
 application factory (responsible for creating and setting up the application
-registry and for instantiating a WSGI application), enables the
-``Pyramid`` transaction manager (ensures a ``commit`` or ``rollback`` is
-issued at the end of each request) with the default commit veto supplied
-by :mod:`everest` and configures the ``public`` folder inside
-the deployment folder for static content.
+registry and for instantiating a ``WSGI`` application), enables the ``Pyramid``
+transaction manager (ensures a ``commit`` or ``rollback`` is issued at the end
+of each request) with the default commit veto supplied by :mod:`everest` and
+configures the ``public`` folder inside the deployment folder for static
+content.
 
-The remaining sections configure the server (``[server:main]``), the WSGI
+The remaining sections configure the server (``[server:main]``), the ``WSGI``
 application stack (``[pipeline:main]``) and the logging subsystem
-(``[loggers]`` and the following sections) in a manner typical for
-:mod:``Pyramid`` applications.
+(``[loggers]`` and the following sections) in a manner typical for ``Pyramid``
+applications.
 
 Configuration
-"""""""""""""
+^^^^^^^^^^^^^
 
-.. sidebar:: The Zope Component Architecture (ZCA)
+.. sidebar:: The Zope Component Architecture (``ZCA``)
 
-   Originally developed for the Zope web application server, the ZCA is a 
+   Originally developed for the Zope web application server, the ``ZCA`` is a 
    framework for component based design of software applications. Components
    are reusable objects with introspectable interfaces which can be configured
    at runtime; this, for instance, makes it easy to substitute arbitrary
@@ -210,8 +217,8 @@ Configuration
    introduction to the ZCA can be found 
    `here http://www.muthukadan.net/docs/zca.html`. 
 
-:mod:`everest`, like :mod:`Pyramid`, makes extensive use of the Zope
-Component Architecture.
+:mod:`everest`, like ``Pyramid``, makes extensive use of the Zope Component
+Architecture.
 
 The ``.zcml`` configuration file - which is loaded through the application
 factory - contains all high-level component declarations for our ``plantscribe``
@@ -222,7 +229,7 @@ application:
    :linenos:
 
 Note the ``include`` directive at the top of the file; this not only pulls in
-the :mod:`everest`-specific ``ZCML`` directives, but also the :mod:`Pyramid`
+the :mod:`everest`-specific ``ZCML`` directives, but also the ``Pyramid``
 directives as well.
 
 The ``filesystem_repository`` directive sets up a default resource repository
@@ -230,9 +237,9 @@ in the file system. A resource repository serves as an accessor for fetching
 resources from and storing resources to some persistency backend. We will
 return to the topic of setting up and configuring resource repositories later.
 
-The ``representer`` directive is used to define generic configuration values
-for representers. Representers are used to convert resources to a representation
-of a particular MIME content type such as ``application/csv``. The generic
+The ``representer`` directive is used to define generic configuration values for
+representers. Representers are used to convert resources to a representation of
+a particular ``MIME`` content type such as ``application/csv``. The generic
 representer configuration values provide defaults for subsequent representer
 configurations on a per-resource basis which we also discuss later in detail.
 
@@ -279,22 +286,22 @@ collection internally, but access through the service as well as the generation
 of absolute URLs for them will not work.
 
 Each ``resource`` directive may contain one or several ``representer``
-directives which specify how this resource should be converted to a
-particular MIME content type representation and vice versa. You always need
-to specify the ``content_type`` (MIME type); in addition, you may specify
-the resource ``kind`` to configure as either "``member``" or "``collection``
-to indicate that the following declarations should only apply to the member
-or collection representer for the enclosing resource, respectively. The
-representer configuration is specified using one or several ``option`` tags
-which have a ``name``, a ``value`` and an optional ``type`` attribute.
-Individual resource attributes can be configured using
-``attribute`` tags. We will explain this feature in more detail later.
+directives which specify how this resource should be converted to a particular
+``MIME`` content type representation and vice versa. You always need to specify
+the ``content_type`` (``MIME`` type); in addition, you may specify the resource
+``kind`` to configure as either "``member``" or "``collection`` to indicate
+that the following declarations should only apply to the member or collection
+representer for the enclosing resource, respectively. The representer
+configuration is specified using one or several ``option`` tags which have a
+``name``, a ``value`` and an optional ``type`` attribute. Individual resource
+attributes can be configured using ``attribute`` tags. We will explain this
+feature in more detail later.
 
 With the resources fully configured, we can now move to the view declarations.
 :mod:`everest` provides three view directives, ``resource_view``,
 ``member_view``, and ``collection_view``. All three are convenience wrappers
-around the standard :mod:`Pyramid` view declaration and accept the same
-options as the latter except for the following differences:
+around the standard ``Pyramid`` view declaration and accept the same options as
+the latter except for the following differences:
 
 * The ``for_`` option accepts not one, but any number of context specifiers.
   You can use also use resource interfaces here;
@@ -327,7 +334,7 @@ options as the latter except for the following differences:
 
   In addition to the default view, named views are registered for all builtin
   representers so that the client can address representations of different
-  MIME content types directly using a URL suffix:
+  ``MIME`` content types directly using a ``URL`` suffix:
 
   ============= ==================== ===============
   **View Name** **MIME Type**         **URL Suffix**
@@ -338,9 +345,9 @@ options as the latter except for the following differences:
   atom          application/xml+atom /@@atom
   ============= ==================== ===============
 
-* The ``default_content_type`` option determines the MIME type of the
-  representation returned in the response when the client does not indicate
-  a preference.
+* The ``default_content_type`` option determines the ``MIME`` type of the
+  representation returned in the response when the client does not indicate a
+  preference.
 
 There is only one difference between the three custom :mod:`everest` view
 directives: When a resource interface is used as value for the ``for_`` option
@@ -378,7 +385,7 @@ Next, set up a deployment folder of your liking, e.g.
    $ mkdir webapps/plantscribe
    
 and populate it with the following files from the ``everest-demo`` project
-folder [#f2]_:
+folder [#f2]_ :
 
 .. code-block:: text
 
@@ -394,9 +401,9 @@ the deployment folder:
 
    $ cp -R ~/git/everest-demo/plantscribe/tests/data . 
 
-Now, we can use the ``pshell`` interactive shell that comes with :mod:`Pyramid`
-to explore the ``plantscribe`` application interactively from the command
-line like this:
+Now, we can use the ``pshell`` interactive shell that comes with ``Pyramid`` to
+explore the ``plantscribe`` application interactively from the command line
+like this:
 
 .. code-block:: text
 
@@ -437,7 +444,7 @@ the collection:
    >>> c.get('fox-peter').__name__
    'fox-peter'
 
-To run the server, exit the pshell (CTRL-D) and use the ``paster`` command
+To run the server, exit the pshell (``CTRL-D``) and use the ``paster`` command
 from the command line:
 
 .. code-block:: text
@@ -445,9 +452,9 @@ from the command line:
    $ paster serve plantscribe.ini
    
 With a tool like the excellent
-`REST client <http://code.google.com/p/rest-client/>`_ you can now explore
-the server response for various REST requests, e.g. a simple GET request to
-the URL `http://localhost:5432/customers`.
+`REST client <http://code.google.com/p/rest-client/>`_ you can now explore the
+server response for various ``REST`` requests, e.g. a simple ``GET`` request to
+the ``URL`` ``http://localhost:5432/customers``.
 
 
 6. Adding persistency
@@ -477,12 +484,12 @@ root collections are written back to their corresponding representation files.
 
 The filesystem-based repository does not perform well with complex or high
 volume data structures or in cases where several processes need to access the
-same persistency backend. In these situations, we need to switch to a
-database repository. :mod:`everest` uses `SQLAlchemy <http://sqlalchemy.org>`_
-as ORM for relational database backends. What follows is a highly simplified
-account of what is needed to instruct ``SQLAlchemy`` to persist the entities
-of an :mod:`everest` application; for an explanation of the terms and concepts
-used in this section, please refer to the excellent documentation on the
+same persistency backend. In these situations, we need to switch to a database
+repository. :mod:`everest` uses ``SQLAlchemy`` as ``ORM`` for relational
+database backends. What follows is a highly simplified account of what is
+needed to instruct ``SQLAlchemy`` to persist the entities of an :mod:`everest`
+application; for an explanation of the terms and concepts used in this section,
+please refer to the excellent documentation on the
 `SQLAlchemy web site <http://sqlalchemy.org/>`_ .
 
 In a first step, we need to initialize the relational database backend and the
@@ -508,10 +515,10 @@ this schema. Note that a special mapper is used which provides a convenient way
 to map the special `id` and `slug` attributes required by :mod:`everest` to the
 ``ORM`` layer.
 
-To use an engine other than the default in-memory SQLite database engine, you
-need to supply a ``db_string`` setting in the paster application ``.ini`` file.
-For example, to use ``Postgres`` with the ``psycopg2`` adapter, you would use
-something like this:
+To use an engine other than the default in-memory ``SQLite`` database engine,
+you need to supply a ``db_string`` setting in the paster application ``.ini``
+file. For example, to use ``Postgres`` with the ``psycopg2`` adapter, you would
+use something like this:
 
 .. code-block:: text
 
