@@ -46,10 +46,16 @@ which data we want to store in our entity model. We start with the customer:
 In our example, the :class:`Customer` class inherits from the :class:`Entity`
 class provided by :mod:`everest`. This is convenient, but not necessary; any
 class can participate in the entity model as long as it implements the
-:class:`everest.entities.interfaces.IEntity` interface. Note, however, that
-this interface requires the presence of a ``slug`` attribute, which in the case
-of the customer entity is given in the form ``<last name>-<first name>``.
+:class:`everest.entities.interfaces.IEntity` interface by declaring an ``id``
+attribute (unique ID among all objects of the class) and a ``slug`` attribute
+(string identifier that uniquely identifies the entity within its aggregate;
+see :ref:`Slugs <sidebar-slugs>`). Note, however, that you typically also want
+your entity classes to implement the
+:class:`everest.representers.interfaces.IMappedClass` interface so that they
+are compatible with the :term:`representer` subsystem for converting resources
+to and from string representations (see :ref:`configuration-zcml` below).
 
+.. _sidebar-slugs:
 
 .. sidebar:: Slugs
 
@@ -58,8 +64,7 @@ of the customer entity is given in the form ``<last name>-<first name>``.
    for the member resource wrapping an entity, so, ideally, it should be a 
    short, mnemonic expression.
 
-For each customer, we need to be able to handle an arbitrary number of
-projects:
+For each customer, we need to be able to handle an arbitrary number of projects:
 
 .. literalinclude:: ../plantscribe/entities/project.py
    :linenos: 
@@ -184,9 +189,9 @@ example on how to configure the extra resource functionality that
 Settings
 ^^^^^^^^
 
-Settings are used for configuration values that may have
-different values for each deployment and are kept in an ``.ini`` file. The
-default settings file for the ``plantscribe`` application looks like this:
+Settings are used for configuration values that may have different values for
+each deployment and are kept in an ``.ini`` file. The default settings file for
+the ``plantscribe`` application looks like this:
 
 .. literalinclude:: ../plantscribe.ini
 
@@ -203,6 +208,9 @@ The remaining sections configure the server (``[server:main]``), the ``WSGI``
 application stack (``[pipeline:main]``) and the logging subsystem
 (``[loggers]`` and the following sections) in a manner typical for ``Pyramid``
 applications.
+
+
+.. _configuration-zcml:
 
 Configuration
 ^^^^^^^^^^^^^
@@ -221,8 +229,8 @@ Configuration
 Architecture.
 
 The ``.zcml`` configuration file - which is loaded through the application
-factory - contains all high-level component declarations for our ``plantscribe``
-application:
+factory - contains all high-level component declarations for our
+``plantscribe`` application:
 
 .. literalinclude:: ../plantscribe/configure.zcml
    :language: xml
@@ -232,16 +240,16 @@ Note the ``include`` directive at the top of the file; this not only pulls in
 the :mod:`everest`-specific ``ZCML`` directives, but also the ``Pyramid``
 directives as well.
 
-The ``filesystem_repository`` directive sets up a default resource repository
-in the file system. A resource repository serves as an accessor for fetching
-resources from and storing resources to some persistency backend. We will
-return to the topic of setting up and configuring resource repositories later.
+The ``filesystem_repository`` directive sets up a default :term:`repository` for
+loading and storing resource data in the file system; we will return to the
+topic of setting up and configuring repositories later.
 
 The ``representer`` directive is used to define generic configuration values for
-representers. Representers are used to convert resources to a representation of
-a particular ``MIME`` content type such as ``application/csv``. The generic
-representer configuration values provide defaults for subsequent representer
-configurations on a per-resource basis which we also discuss later in detail.
+a :term:`representer` which is used to convert a resource to and from a string
+representation of a particular ``MIME`` content type such as
+``application/csv``. The generic representer configuration values provide
+defaults for subsequent representer configurations on a per-resource basis
+which we also discuss later in detail.
 
 The most important of the :mod:`everest`-specific declarations are made using
 the ``resource`` directive. In the example application, the resources are
@@ -264,9 +272,9 @@ declared in a separate ``ZCML`` file (only the declarations for the
    
 .. |resource_classes| image:: resource_classes.png
 
-Each ``resource`` directive sets up the various components of the
-resource subsystem, using our marker interfaces as the glue. At the minimum,
-you need to specify
+Each ``resource`` directive sets up the various components of the resource
+subsystem, using our marker interfaces as the glue. At the minimum, you need to
+specify
 
 - A marker interface for your resource;
 
@@ -276,12 +284,12 @@ you need to specify
 
 - A name for the root collection.
 
-The aggregate and collection objects needed by the resource subsystem
-are created automatically; you may, however, supply a custom collection class
-that inherits from :class:`everest.resources.base.Collection`. If you do not
-plan on exposing the collection for this resource to the outside, you can set
-the ``expose`` flag to ``false``, in which case you do not need to provide a
-root collection name. Non-exposed resources will still be available as a root
+The aggregate and collection objects needed by the resource subsystem are
+created automatically; you may, however, supply a custom collection class that
+inherits from :class:`everest.resources.base.Collection`. If you do not plan on
+exposing the collection for this resource to the outside, you can set the
+``expose`` flag to ``false``, in which case you do not need to provide a root
+collection name. Non-exposed resources will still be available as a root
 collection internally, but access through the service as well as the generation
 of absolute URLs for them will not work.
 
@@ -306,17 +314,21 @@ the latter except for the following differences:
 * The ``for_`` option accepts not one, but any number of context specifiers.
   You can use also use resource interfaces here;
 * The ``request_method`` option has special meaning in the resource view
-  directives in that, together with the value of the ``for_`` option, it
-  allows :mod:`everest` to determine which view class to use. The following
-  table shows the rules for this view autodetection feature:
+  directives in that, together with the value of the ``for_`` option, it allows
+  :mod:`everest` to determine which view class to use. The following table
+  shows the rules for this view autodetection feature:
 
   ========================= ===================== ========================
   **Context Resource Kind** **Request Method**    **Default View Class**
   ========================= ===================== ========================
   Collection                GET                   GetCollectionView
+
   Collection                POST                  PostCollectionView
+
   Member                    GET                   GetMemberView
+
   Member                    PUT or FAKE_PUT       PutMemberView
+
   Member                    DELETE or FAKE_DELETE DeleteMemberView
   ========================= ===================== ========================
 
@@ -324,25 +336,32 @@ the latter except for the following differences:
   option instruct :mod:`everest` to register a view that will respond to
   ``POST`` requests that have the ``X-HTTP-Method-Override:PUT`` or the
   ``X-HTTP-Method-Override:DELETE`` header set with a ``PUT`` or ``DELETE``
-  operation, respectively. This is useful for clients that offer no support
-  for ``PUT`` or ``POST`` (e.g., Flex).
+  operation, respectively. This is useful for clients that offer no support for
+  ``PUT`` or ``POST`` (e.g., Flex).
 
   You can suppress automatic view detection by explicitly passing in a value
   for the ``view`` option. Note that you can also specify several request
-  method arguments in one view declaration to register the associated view
-  for each request method in a single directive.
+  method arguments in one view declaration to register the associated view for
+  each request method in a single directive.
 
   In addition to the default view, named views are registered for all builtin
   representers so that the client can address representations of different
   ``MIME`` content types directly using a ``URL`` suffix:
 
   ============= ==================== ===============
-  **View Name** **MIME Type**         **URL Suffix**
+
+  **View Name**     **MIME Type**     **URL Suffix**
+
   ============= ==================== ===============
+
   csv           application/csv      /@@csv
+
   json          application/json     /@@json
+
   xml           application/xml      /@@xml
+
   atom          application/xml+atom /@@atom
+
   ============= ==================== ===============
 
 * The ``default_content_type`` option determines the ``MIME`` type of the
@@ -351,8 +370,8 @@ the latter except for the following differences:
 
 There is only one difference between the three custom :mod:`everest` view
 directives: When a resource interface is used as value for the ``for_`` option
-in the ``resource_view`` declaration, the specified view is registered for
-both the associated member and collection resource classes whereas in the
+in the ``resource_view`` declaration, the specified view is registered for both
+the associated member and collection resource classes whereas in the
 ``collection_view`` and the ``member_view`` directives the view is only
 registered for the collection resource class and member resource class,
 respectively.
@@ -361,8 +380,8 @@ respectively.
 5. Running the application
 --------------------------
 
-To see our little application in action, we first need to check out the
-latest sources for the :mod:`everest-demo` project from github:
+To see our little application in action, we first need to check out the latest
+sources for the :mod:`everest-demo` project from github:
 
 .. code-block:: text
 
@@ -464,9 +483,9 @@ With the application running, we now turn our attention to persistency.
 :mod:`everest` uses a :term:`repository` to load and save resources from and to
 a storage backend.
 
-By default, :mod:`everest` uses a non-persisting memory repository as
-resource repository. With the following ``ZCML`` declaration, a
-filesystem-based repository is used as the default for our application:
+By default, :mod:`everest` uses a non-persisting memory repository as resource
+repository. With the following ``ZCML`` declaration, a filesystem-based
+repository is used as the default for our application:
 
 .. code-block:: xml
 
@@ -476,9 +495,9 @@ filesystem-based repository is used as the default for our application:
       make_default="true" />
 
 This tells :mod:`everest` to use the ``data`` directory (relative to the
-deployment directory) to persist representations of the root collections of
-all resources as ``.csv`` (Comma Separated Value) files. When the application
-is initialized, the root collections are loaded from these representation files
+deployment directory) to persist representations of the root collections of all
+resources as ``.csv`` (Comma Separated Value) files. When the application is
+initialized, the root collections are loaded from these representation files
 and during each ``commit`` operation at the end of a transaction, all modified
 root collections are written back to their corresponding representation files.
 
