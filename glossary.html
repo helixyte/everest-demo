@@ -105,27 +105,32 @@
   <div class="section" id="glossary-of-terms">
 <h1>Glossary of Terms<a class="headerlink" href="#glossary-of-terms" title="Permalink to this headline">¶</a></h1>
 <dl class="glossary docutils">
-<dt id="term-entity">entity</dt>
-<dd>An object in the domain model holding value state.</dd>
-<dt id="term-domain-logic">domain logic</dt>
-<dd>The set of rules and constraints governing the value state of the
-application.</dd>
-<dt id="term-resource">resource</dt>
-<dd>xxx</dd>
-<dt id="term-member-resource">member resource</dt>
-<dd>xxx</dd>
-<dt id="term-collection-resource">collection resource</dt>
+<dt id="term-aggregate">aggregate</dt>
 <dd>xxx</dd>
 <dt id="term-business-logic">business logic</dt>
 <dd>The set of rules and constraints governing the behavior of the
 application.</dd>
+<dt id="term-collection-resource">collection resource</dt>
+<dd>xxx</dd>
+<dt id="term-domain-logic">domain logic</dt>
+<dd>The set of rules and constraints governing the value state of the
+application.</dd>
+<dt id="term-entity">entity</dt>
+<dd>An object in the domain model holding value state.</dd>
+<dt id="term-member-resource">member resource</dt>
+<dd>xxx</dd>
+<dt id="term-repository">repository</dt>
+<dd>Provides <a class="reference internal" href="#term-aggregate"><em class="xref std std-term">aggregate</em></a> and <a class="reference internal" href="#term-collection-resource"><em class="xref std std-term">collection resource</em></a> accessors for a
+storage backend containing entity data for a given resource class.</dd>
+<dt id="term-representer">representer</dt>
+<dd>A tool that knows how to convert a resource to a string representation
+of a particular <tt class="docutils literal"><span class="pre">MIME</span></tt> type and back.</dd>
+<dt id="term-resource">resource</dt>
+<dd>xxx</dd>
 <dt id="term-slug">slug</dt>
 <dd>A character string that uniquely identifies a <a class="reference internal" href="#term-member-resource"><em class="xref std std-term">member resource</em></a>
-within its collection.</dd>
-<dt id="term-repository">repository</dt>
-<dd>xxx</dd>
-<dt id="term-aggregate">aggregate</dt>
-<dd>xxx</dd>
+within its <a class="reference internal" href="#term-collection-resource"><em class="xref std std-term">collection resource</em></a> (and, by extension, an
+<a class="reference internal" href="#term-entity"><em class="xref std std-term">entity</em></a> within its <a class="reference internal" href="#term-aggregate"><em class="xref std std-term">aggregate</em></a>).</dd>
 </dl>
 </div>
 

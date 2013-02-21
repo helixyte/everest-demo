@@ -129,9 +129,8 @@ of one or more criteria of the form</p>
 <blockquote>
 <div><tt class="docutils literal"><span class="pre">resource</span> <span class="pre">attribute</span> <span class="pre">name</span> <span class="pre">&quot;:&quot;</span> <span class="pre">operator</span> <span class="pre">&quot;:&quot;</span> <span class="pre">value</span></tt></div></blockquote>
 <p>Example: <tt class="docutils literal"><span class="pre">last-name:equal-to:&quot;Doe&quot;</span></tt></p>
-<p>It is possible to supply multiple criterion values in a comma separated
-list, which will be interpreted as a Boolean &#8220;OR&#8221; operation on all given
-values.</p>
+<p>It is possible to supply multiple criterion values in a comma separated list,
+which will be interpreted as a Boolean &#8220;OR&#8221; operation on all given values.</p>
 <p>Supported types for a <tt class="docutils literal"><span class="pre">CQL</span></tt> criterion value are:</p>
 <dl class="docutils">
 <dt>String</dt>
@@ -345,26 +344,26 @@ the WSGI stack.</li>
 <p>The default behavior of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> representers is to</p>
 <blockquote>
 <div><ul class="simple">
-<li>Represent all terminal attribute values as the value obtained by converting
-the attribute value object to a string;</li>
+<li>Represent all terminal attribute values as the value obtained by
+converting the attribute value object to a string;</li>
 <li>Represent nested member resources as links (<a href="#id1"><span class="problematic" id="id2">``</span></a>URL``s); and</li>
 <li>Ignore nested collection resources.</li>
 </ul>
 </div></blockquote>
-<p>Nested collections are ignored by default because retrieving a collection can
-be very expensive and even just generating a <tt class="docutils literal"><span class="pre">URL</span></tt> for a collection requires
-iterating over all its members. The exception to this rule is when the
-nested collection can be specified using a &#8220;backreference&#8221; from its members
-to the parent resource, defined in the <tt class="docutils literal"><span class="pre">backref</span></tt> argument to the
+<p>Nested collections are ignored by default because retrieving a collection can be
+very expensive and even just generating a <tt class="docutils literal"><span class="pre">URL</span></tt> for a collection requires
+iterating over all its members. The exception to this rule is when the nested
+collection can be specified using a &#8220;backreference&#8221; from its members to the
+parent resource, defined in the <tt class="docutils literal"><span class="pre">backref</span></tt> argument to the
 <tt class="xref py py-func docutils literal"><span class="pre">collection_attribute()</span></tt> descriptor).</p>
 <p>To change these defaults for a given resource attribute, we set the appropriate
 <tt class="docutils literal"><span class="pre">representer</span></tt>, <tt class="docutils literal"><span class="pre">attribute</span></tt> and <tt class="docutils literal"><span class="pre">option</span></tt> tags inside a <tt class="docutils literal"><span class="pre">resource</span></tt>
 declaration. For example, to include the nested <tt class="docutils literal"><span class="pre">projects</span></tt> collection in
-<tt class="docutils literal"><span class="pre">XML</span></tt> representations of <tt class="docutils literal"><span class="pre">customer</span></tt> members we would include the
-following declaration in the <tt class="docutils literal"><span class="pre">ZCML</span></tt> configuration file:</p>
+<tt class="docutils literal"><span class="pre">CSV</span></tt> representations of <tt class="docutils literal"><span class="pre">customer</span></tt> members we would include the following
+declaration in the <tt class="docutils literal"><span class="pre">ZCML</span></tt> configuration file:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;representer</span>
    <span class="na">kind=</span><span class="s">&quot;member&quot;</span>
-   <span class="na">content_type=</span><span class="s">&quot;everest.mime.XmlMime&quot;</span>
+   <span class="na">content_type=</span><span class="s">&quot;everest.mime.CsvMime&quot;</span>
 <span class="nt">&gt;</span>
    <span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects&quot;</span><span class="nt">&gt;</span>
        <span class="nt">&lt;option</span>
@@ -377,19 +376,19 @@ following declaration in the <tt class="docutils literal"><span class="pre">ZCML
 <span class="nt">&lt;/representer&gt;</span>
 </pre></div>
 </div>
-<p>The <tt class="docutils literal"><span class="pre">ignore</span></tt> option is a shorthand for setting both the <tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>
-and the <tt class="docutils literal"><span class="pre">ignore_on_write</span></tt> option which set the ignore behavior selectively
-when a representation is parsed (<tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>) or generated
+<p>The <tt class="docutils literal"><span class="pre">ignore</span></tt> option is a shorthand for setting both the <tt class="docutils literal"><span class="pre">ignore_on_read</span></tt> and
+the <tt class="docutils literal"><span class="pre">ignore_on_write</span></tt> option which set the ignore behavior selectively when a
+representation is parsed (<tt class="docutils literal"><span class="pre">ignore_on_read</span></tt>) or generated
 (<tt class="docutils literal"><span class="pre">ignore_on_write</span></tt>). The <tt class="docutils literal"><span class="pre">write_as_link</span></tt> option specifies whether the
 resource attribute is represented as a (<tt class="docutils literal"><span class="pre">URL</span></tt>) link (option value set to
 &#8220;<cite>true</cite>&#8221;) or in its &#8220;expanded&#8221; form with all its (nested) resource attributes
-represented (option value set to &#8220;<cite>false</cite>&#8221;. If you choose to expand a
-resource attribute, by default only its terminal nested attributes will be
-included in the representation. To include nested member and collection
-attributes (either as a link or, recursively, expanded) you need to provide
-another <cite>attribute</cite> tag using a dotted attribute name. For example, adding
-the following tag inside the <cite>representer</cite> tag above will cause the <cite>sites</cite>
-attribute of the customer&#8217;s <cite>projects</cite> attribute to be included as a link:</p>
+represented (option value set to &#8220;<cite>false</cite>&#8221;. If you choose to expand a resource
+attribute, by default only its terminal nested attributes will be included in
+the representation. To include nested member and collection attributes (either
+as a link or, recursively, expanded) you need to provide another <cite>attribute</cite>
+tag using a dotted attribute name. For example, adding the following tag inside
+the <cite>representer</cite> tag above will cause the <cite>sites</cite> attribute of the customer&#8217;s
+<cite>projects</cite> attribute to be included as a link:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects.sites&quot;</span><span class="nt">&gt;</span>
     <span class="nt">&lt;option</span>
         <span class="na">name=</span><span class="s">&quot;ignore&quot;</span>
@@ -402,6 +401,16 @@ tags.</p>
 <p>It is perhaps most instructive to think of these attribute configurations as a
 way to prune the branches of a resource data tree when building a
 representation of the latter.</p>
+<p>In addition to pruning the branches of the resource data tree, you can also
+rename them with the <tt class="docutils literal"><span class="pre">repr_name</span></tt> tag, again with the option to use dotted
+attribute names to reference nested branches:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;attribute</span> <span class="na">name=</span><span class="s">&quot;projects.name&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span>
+        <span class="na">name=</span><span class="s">&quot;repr_name&quot;</span>
+        <span class="na">value=</span><span class="s">&quot;project_name&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/attribute&gt;</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="using-different-mime-content-types">
 <span id="id3"></span><h3>Using different MIME content types<a class="headerlink" href="#using-different-mime-content-types" title="Permalink to this headline">¶</a></h3>
@@ -419,6 +428,137 @@ attribute of the member class when a representation is created. Likewise, when
 an incoming representation is parsed, the value of the <tt class="docutils literal"><span class="pre">__jsonclass__</span></tt>
 attribute is used to look up the class to use for constructing resource member
 objects.</p>
+<p>The <tt class="docutils literal"><span class="pre">XML</span></tt> representer is a little more complex in that it requires declaration
+of a schema, a namespace, and a namespace prefix:</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;representer</span> <span class="na">content_type=</span><span class="s">&quot;everest.mime.XmlMime&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span>
+        <span class="na">name=</span><span class="s">&quot;xml_schema&quot;</span>
+        <span class="na">value=</span><span class="s">&quot;plantscribe:schemata/Plantscribe.xsd&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;option</span>
+        <span class="na">name=</span><span class="s">&quot;xml_ns&quot;</span>
+        <span class="na">value=</span><span class="s">&quot;http://schemata.everest.org/plantscribe&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;option</span>
+        <span class="na">name=</span><span class="s">&quot;xml_prefix&quot;</span>
+        <span class="na">value=</span><span class="s">&quot;ps&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/representer&gt;</span>
+</pre></div>
+</div>
+<p>It is also possible to specify the <tt class="docutils literal"><span class="pre">XML</span></tt> schema, namespace, and prefix
+settings on a per-resource basis.</p>
+<p>The <tt class="docutils literal"><span class="pre">XML</span></tt> schema needs to be based on the schema template provided in the file
+<tt class="file docutils literal"><span class="pre">support.XmlSchemaTemplate.xsd</span></tt>. For each resource interface, the schema
+defines <tt class="docutils literal"><span class="pre">XML</span></tt> types for a member resource, a collection resource, a link to a
+member resource, and a link to a collection resource. Only the type specifying
+the member resource needs to be customized, as demonstrated in the following
+example for the <tt class="docutils literal"><span class="pre">ICustomer</span></tt> resource <a class="footnote-reference" href="#f3" id="id4">[1]</a> :</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48</pre></div></td><td class="code"><div class="highlight"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;schema</span>
+    <span class="na">xmlns=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>
+    <span class="na">targetNamespace=</span><span class="s">&quot;http://schemata.everest.org/plantscribe&quot;</span>
+    <span class="na">elementFormDefault=</span><span class="s">&quot;qualified&quot;</span>
+    <span class="na">xmlns:rc=</span><span class="s">&quot;http://schemata.everest.org/resource&quot;</span>
+    <span class="na">xmlns:app=</span><span class="s">&quot;http://schemata.everest.org/plantscribe&quot;</span>
+<span class="nt">&gt;</span>
+    <span class="nt">&lt;import</span>
+        <span class="na">schemaLocation=</span><span class="s">&quot;Resource.xsd&quot;</span>
+        <span class="na">namespace=</span><span class="s">&quot;http://schemata.everest.org/resource&quot;</span>
+    <span class="nt">&gt;</span>
+    <span class="nt">&lt;/import&gt;</span>
+
+    <span class="c">&lt;!-- CUSTOMER resource --&gt;</span>
+
+    <span class="nt">&lt;complexType</span> <span class="na">name=</span><span class="s">&quot;CustomerType&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;complexContent&gt;</span>
+            <span class="nt">&lt;extension</span> <span class="na">base=</span><span class="s">&quot;rc:ResourceType&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;choice&gt;</span>
+                    <span class="nt">&lt;element</span>
+                        <span class="na">name=</span><span class="s">&quot;link&quot;</span>
+                        <span class="na">type=</span><span class="s">&quot;app:CustomerLinkType&quot;</span>
+                    <span class="nt">&gt;</span>
+                    <span class="nt">&lt;/element&gt;</span>
+                    <span class="nt">&lt;sequence&gt;</span>
+                        <span class="nt">&lt;element</span>
+                            <span class="na">name=</span><span class="s">&quot;first_name&quot;</span>
+                            <span class="na">type=</span><span class="s">&quot;string&quot;</span>
+                        <span class="nt">&gt;</span>
+                        <span class="nt">&lt;/element&gt;</span>
+                        <span class="nt">&lt;element</span>
+                            <span class="na">name=</span><span class="s">&quot;last_name&quot;</span>
+                            <span class="na">type=</span><span class="s">&quot;string&quot;</span>
+                        <span class="nt">&gt;</span>
+                        <span class="nt">&lt;/element&gt;</span>
+                        <span class="nt">&lt;element</span> <span class="na">ref=</span><span class="s">&quot;app:projects&quot;</span>
+                            <span class="na">minOccurs=</span><span class="s">&quot;0&quot;</span>
+                            <span class="na">maxOccurs=</span><span class="s">&quot;1&quot;</span>
+                        <span class="nt">&gt;</span>
+                        <span class="nt">&lt;/element&gt;</span>
+                    <span class="nt">&lt;/sequence&gt;</span>
+                <span class="nt">&lt;/choice&gt;</span>
+            <span class="nt">&lt;/extension&gt;</span>
+        <span class="nt">&lt;/complexContent&gt;</span>
+    <span class="nt">&lt;/complexType&gt;</span>
+
+<span class="nt">&lt;/schema&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>Since the <tt class="docutils literal"><span class="pre">XML</span></tt> schema can be validated both on the server and on the client
+side, it can serve as a contract between the two sides; however, this
+additional overhead is not always needed.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="f3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[1]</a></td><td>The <tt class="docutils literal"><span class="pre">XML</span></tt> schema file should really be generated automatically from
+the resource attribute declarations.</td></tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

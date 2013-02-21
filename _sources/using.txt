@@ -21,9 +21,8 @@ of one or more criteria of the form
 
 Example: ``last-name:equal-to:"Doe"``
 
-It is possible to supply multiple criterion values in a comma separated
-list, which will be interpreted as a Boolean "OR" operation on all given
-values.
+It is possible to supply multiple criterion values in a comma separated list,
+which will be interpreted as a Boolean "OR" operation on all given values.
 
 Supported types for a ``CQL`` criterion value are:
 
@@ -142,29 +141,29 @@ Customizing resource attribute representation
 
 The default behavior of the :mod:`everest` representers is to
 
- * Represent all terminal attribute values as the value obtained by converting
-   the attribute value object to a string;
+ * Represent all terminal attribute values as the value obtained by
+   converting the attribute value object to a string;
  * Represent nested member resources as links (``URL``s); and
  * Ignore nested collection resources.
 
-Nested collections are ignored by default because retrieving a collection can
-be very expensive and even just generating a ``URL`` for a collection requires
-iterating over all its members. The exception to this rule is when the
-nested collection can be specified using a "backreference" from its members
-to the parent resource, defined in the ``backref`` argument to the
+Nested collections are ignored by default because retrieving a collection can be
+very expensive and even just generating a ``URL`` for a collection requires
+iterating over all its members. The exception to this rule is when the nested
+collection can be specified using a "backreference" from its members to the
+parent resource, defined in the ``backref`` argument to the
 :func:`collection_attribute` descriptor).
 
 To change these defaults for a given resource attribute, we set the appropriate
 ``representer``, ``attribute`` and ``option`` tags inside a ``resource``
 declaration. For example, to include the nested ``projects`` collection in
-``XML`` representations of ``customer`` members we would include the
-following declaration in the ``ZCML`` configuration file:
+``CSV`` representations of ``customer`` members we would include the following
+declaration in the ``ZCML`` configuration file:
 
 .. code-block:: xml
 
    <representer
       kind="member"
-      content_type="everest.mime.XmlMime"
+      content_type="everest.mime.CsvMime"
    >
       <attribute name="projects">
           <option
@@ -176,19 +175,19 @@ following declaration in the ``ZCML`` configuration file:
       </attribute>
    </representer>
 
-The ``ignore`` option is a shorthand for setting both the ``ignore_on_read``
-and the ``ignore_on_write`` option which set the ignore behavior selectively
-when a representation is parsed (``ignore_on_read``) or generated
+The ``ignore`` option is a shorthand for setting both the ``ignore_on_read`` and
+the ``ignore_on_write`` option which set the ignore behavior selectively when a
+representation is parsed (``ignore_on_read``) or generated
 (``ignore_on_write``). The ``write_as_link`` option specifies whether the
 resource attribute is represented as a (``URL``) link (option value set to
 "`true`") or in its "expanded" form with all its (nested) resource attributes
-represented (option value set to "`false`". If you choose to expand a
-resource attribute, by default only its terminal nested attributes will be
-included in the representation. To include nested member and collection
-attributes (either as a link or, recursively, expanded) you need to provide
-another `attribute` tag using a dotted attribute name. For example, adding
-the following tag inside the `representer` tag above will cause the `sites`
-attribute of the customer's `projects` attribute to be included as a link:
+represented (option value set to "`false`". If you choose to expand a resource
+attribute, by default only its terminal nested attributes will be included in
+the representation. To include nested member and collection attributes (either
+as a link or, recursively, expanded) you need to provide another `attribute`
+tag using a dotted attribute name. For example, adding the following tag inside
+the `representer` tag above will cause the `sites` attribute of the customer's
+`projects` attribute to be included as a link:
 
 .. code-block:: xml
 
@@ -204,6 +203,19 @@ tags.
 It is perhaps most instructive to think of these attribute configurations as a
 way to prune the branches of a resource data tree when building a
 representation of the latter.
+
+In addition to pruning the branches of the resource data tree, you can also
+rename them with the ``repr_name`` tag, again with the option to use dotted
+attribute names to reference nested branches:
+
+.. code-block:: xml
+
+   <attribute name="projects.name">
+       <option
+           name="repr_name"
+           value="project_name" />
+   </attribute>
+
 
 .. _using-different-mime-content-types:
 
@@ -226,3 +238,44 @@ attribute of the member class when a representation is created. Likewise, when
 an incoming representation is parsed, the value of the ``__jsonclass__``
 attribute is used to look up the class to use for constructing resource member
 objects.
+
+The ``XML`` representer is a little more complex in that it requires declaration
+of a schema, a namespace, and a namespace prefix:
+
+.. code-block:: xml
+
+    <representer content_type="everest.mime.XmlMime">
+        <option
+            name="xml_schema"
+            value="plantscribe:schemata/Plantscribe.xsd" />
+        <option
+            name="xml_ns"
+            value="http://schemata.everest.org/plantscribe" />
+        <option
+            name="xml_prefix"
+            value="ps" />
+    </representer>
+
+It is also possible to specify the ``XML`` schema, namespace, and prefix
+settings on a per-resource basis.
+
+The ``XML`` schema needs to be based on the schema template provided in the file
+:file:`support.XmlSchemaTemplate.xsd`. For each resource interface, the schema
+defines ``XML`` types for a member resource, a collection resource, a link to a
+member resource, and a link to a collection resource. Only the type specifying
+the member resource needs to be customized, as demonstrated in the following
+example for the ``ICustomer`` resource [#f3]_ :
+
+.. literalinclude:: ../plantscribe/schemata/Plantscribe.xsd
+   :lines: 1-47,461-
+   :language: xml
+   :linenos:
+ 
+Since the ``XML`` schema can be validated both on the server and on the client
+side, it can serve as a contract between the two sides; however, this
+additional overhead is not always needed.
+
+.. rubric:: Footnotes
+
+.. [#f3] The ``XML`` schema file should really be generated automatically from 
+         the resource attribute declarations.

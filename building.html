@@ -178,18 +178,22 @@ which data we want to store in our entity model. We start with the customer:</p>
 <p>In our example, the <tt class="xref py py-class docutils literal"><span class="pre">Customer</span></tt> class inherits from the <tt class="xref py py-class docutils literal"><span class="pre">Entity</span></tt>
 class provided by <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>. This is convenient, but not necessary; any
 class can participate in the entity model as long as it implements the
-<tt class="xref py py-class docutils literal"><span class="pre">everest.entities.interfaces.IEntity</span></tt> interface. Note, however, that
-this interface requires the presence of a <tt class="docutils literal"><span class="pre">slug</span></tt> attribute, which in the case
-of the customer entity is given in the form <tt class="docutils literal"><span class="pre">&lt;last</span> <span class="pre">name&gt;-&lt;first</span> <span class="pre">name&gt;</span></tt>.</p>
-<div class="sidebar">
+<tt class="xref py py-class docutils literal"><span class="pre">everest.entities.interfaces.IEntity</span></tt> interface by declaring an <tt class="docutils literal"><span class="pre">id</span></tt>
+attribute (unique ID among all objects of the class) and a <tt class="docutils literal"><span class="pre">slug</span></tt> attribute
+(string identifier that uniquely identifies the entity within its aggregate;
+see <a class="reference internal" href="#sidebar-slugs"><em>Slugs</em></a>). Note, however, that you typically also want
+your entity classes to implement the
+<tt class="xref py py-class docutils literal"><span class="pre">everest.representers.interfaces.IMappedClass</span></tt> interface so that they
+are compatible with the <a class="reference internal" href="glossary.html#term-representer"><em class="xref std std-term">representer</em></a> subsystem for converting resources
+to and from string representations (see <a class="reference internal" href="#configuration-zcml"><em>Configuration</em></a> below).</p>
+<div class="sidebar" id="sidebar-slugs">
 <p class="first sidebar-title">Slugs</p>
 <p class="last">A <a class="reference internal" href="glossary.html#term-slug"><em class="xref std std-term">slug</em></a> is a character string that uniquely identifies an entity
 within its aggregate. <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses the slug to generate an URL
 for the member resource wrapping an entity, so, ideally, it should be a
 short, mnemonic expression.</p>
 </div>
-<p>For each customer, we need to be able to handle an arbitrary number of
-projects:</p>
+<p>For each customer, we need to be able to handle an arbitrary number of projects:</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -587,9 +591,9 @@ example on how to configure the extra resource functionality that
 <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> supplies.</p>
 <div class="section" id="settings">
 <h3>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h3>
-<p>Settings are used for configuration values that may have
-different values for each deployment and are kept in an <tt class="docutils literal"><span class="pre">.ini</span></tt> file. The
-default settings file for the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application looks like this:</p>
+<p>Settings are used for configuration values that may have different values for
+each deployment and are kept in an <tt class="docutils literal"><span class="pre">.ini</span></tt> file. The default settings file for
+the <tt class="docutils literal"><span class="pre">plantscribe</span></tt> application looks like this:</p>
 <div class="highlight-python"><pre>[DEFAULT]
 
 [app:plantscribe]
@@ -664,7 +668,7 @@ application stack (<tt class="docutils literal"><span class="pre">[pipeline:main
 applications.</p>
 </div>
 <div class="section" id="configuration">
-<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<span id="configuration-zcml"></span><h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
 <div class="sidebar">
 <p class="first sidebar-title">The Zope Component Architecture (<tt class="docutils literal"><span class="pre">ZCA</span></tt>)</p>
 <p class="last">Originally developed for the Zope web application server, the <tt class="docutils literal"><span class="pre">ZCA</span></tt> is a
@@ -678,8 +682,8 @@ introduction to the ZCA can be found
 <p><tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>, like <tt class="docutils literal"><span class="pre">Pyramid</span></tt>, makes extensive use of the Zope Component
 Architecture.</p>
 <p>The <tt class="docutils literal"><span class="pre">.zcml</span></tt> configuration file - which is loaded through the application
-factory - contains all high-level component declarations for our <tt class="docutils literal"><span class="pre">plantscribe</span></tt>
-application:</p>
+factory - contains all high-level component declarations for our
+<tt class="docutils literal"><span class="pre">plantscribe</span></tt> application:</p>
 <div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -836,15 +840,15 @@ application:</p>
 <p>Note the <tt class="docutils literal"><span class="pre">include</span></tt> directive at the top of the file; this not only pulls in
 the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific <tt class="docutils literal"><span class="pre">ZCML</span></tt> directives, but also the <tt class="docutils literal"><span class="pre">Pyramid</span></tt>
 directives as well.</p>
-<p>The <tt class="docutils literal"><span class="pre">filesystem_repository</span></tt> directive sets up a default resource repository
-in the file system. A resource repository serves as an accessor for fetching
-resources from and storing resources to some persistency backend. We will
-return to the topic of setting up and configuring resource repositories later.</p>
+<p>The <tt class="docutils literal"><span class="pre">filesystem_repository</span></tt> directive sets up a default <a class="reference internal" href="glossary.html#term-repository"><em class="xref std std-term">repository</em></a> for
+loading and storing resource data in the file system; we will return to the
+topic of setting up and configuring repositories later.</p>
 <p>The <tt class="docutils literal"><span class="pre">representer</span></tt> directive is used to define generic configuration values for
-representers. Representers are used to convert resources to a representation of
-a particular <tt class="docutils literal"><span class="pre">MIME</span></tt> content type such as <tt class="docutils literal"><span class="pre">application/csv</span></tt>. The generic
-representer configuration values provide defaults for subsequent representer
-configurations on a per-resource basis which we also discuss later in detail.</p>
+a <a class="reference internal" href="glossary.html#term-representer"><em class="xref std std-term">representer</em></a> which is used to convert a resource to and from a string
+representation of a particular <tt class="docutils literal"><span class="pre">MIME</span></tt> content type such as
+<tt class="docutils literal"><span class="pre">application/csv</span></tt>. The generic representer configuration values provide
+defaults for subsequent representer configurations on a per-resource basis
+which we also discuss later in detail.</p>
 <p>The most important of the <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>-specific declarations are made using
 the <tt class="docutils literal"><span class="pre">resource</span></tt> directive. In the example application, the resources are
 declared in a separate <tt class="docutils literal"><span class="pre">ZCML</span></tt> file (only the declarations for the
@@ -948,21 +952,21 @@ the marker interface <tt class="docutils literal"><span class="pre">IFoo</span><
 retrieved (and configured) at runtime.</p>
 <p class="last"><img alt="resource_classes" src="_images/resource_classes.png" /></p>
 </div>
-<p>Each <tt class="docutils literal"><span class="pre">resource</span></tt> directive sets up the various components of the
-resource subsystem, using our marker interfaces as the glue. At the minimum,
-you need to specify</p>
+<p>Each <tt class="docutils literal"><span class="pre">resource</span></tt> directive sets up the various components of the resource
+subsystem, using our marker interfaces as the glue. At the minimum, you need to
+specify</p>
 <ul class="simple">
 <li>A marker interface for your resource;</li>
 <li>An entity class for the resource;</li>
 <li>A member class class for the resource; and</li>
 <li>A name for the root collection.</li>
 </ul>
-<p>The aggregate and collection objects needed by the resource subsystem
-are created automatically; you may, however, supply a custom collection class
-that inherits from <tt class="xref py py-class docutils literal"><span class="pre">everest.resources.base.Collection</span></tt>. If you do not
-plan on exposing the collection for this resource to the outside, you can set
-the <tt class="docutils literal"><span class="pre">expose</span></tt> flag to <tt class="docutils literal"><span class="pre">false</span></tt>, in which case you do not need to provide a
-root collection name. Non-exposed resources will still be available as a root
+<p>The aggregate and collection objects needed by the resource subsystem are
+created automatically; you may, however, supply a custom collection class that
+inherits from <tt class="xref py py-class docutils literal"><span class="pre">everest.resources.base.Collection</span></tt>. If you do not plan on
+exposing the collection for this resource to the outside, you can set the
+<tt class="docutils literal"><span class="pre">expose</span></tt> flag to <tt class="docutils literal"><span class="pre">false</span></tt>, in which case you do not need to provide a root
+collection name. Non-exposed resources will still be available as a root
 collection internally, but access through the service as well as the generation
 of absolute URLs for them will not work.</p>
 <p>Each <tt class="docutils literal"><span class="pre">resource</span></tt> directive may contain one or several <tt class="docutils literal"><span class="pre">representer</span></tt>
@@ -986,9 +990,9 @@ the latter except for the following differences:</p>
 You can use also use resource interfaces here;</p>
 </li>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">request_method</span></tt> option has special meaning in the resource view
-directives in that, together with the value of the <tt class="docutils literal"><span class="pre">for_</span></tt> option, it
-allows <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to determine which view class to use. The following
-table shows the rules for this view autodetection feature:</p>
+directives in that, together with the value of the <tt class="docutils literal"><span class="pre">for_</span></tt> option, it allows
+<tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to determine which view class to use. The following table
+shows the rules for this view autodetection feature:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="36%" />
@@ -1046,12 +1050,12 @@ table shows the rules for this view autodetection feature:</p>
 option instruct <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to register a view that will respond to
 <tt class="docutils literal"><span class="pre">POST</span></tt> requests that have the <tt class="docutils literal"><span class="pre">X-HTTP-Method-Override:PUT</span></tt> or the
 <tt class="docutils literal"><span class="pre">X-HTTP-Method-Override:DELETE</span></tt> header set with a <tt class="docutils literal"><span class="pre">PUT</span></tt> or <tt class="docutils literal"><span class="pre">DELETE</span></tt>
-operation, respectively. This is useful for clients that offer no support
-for <tt class="docutils literal"><span class="pre">PUT</span></tt> or <tt class="docutils literal"><span class="pre">POST</span></tt> (e.g., Flex).</p>
+operation, respectively. This is useful for clients that offer no support for
+<tt class="docutils literal"><span class="pre">PUT</span></tt> or <tt class="docutils literal"><span class="pre">POST</span></tt> (e.g., Flex).</p>
 <p>You can suppress automatic view detection by explicitly passing in a value
 for the <tt class="docutils literal"><span class="pre">view</span></tt> option. Note that you can also specify several request
-method arguments in one view declaration to register the associated view
-for each request method in a single directive.</p>
+method arguments in one view declaration to register the associated view for
+each request method in a single directive.</p>
 <p>In addition to the default view, named views are registered for all builtin
 representers so that the client can address representations of different
 <tt class="docutils literal"><span class="pre">MIME</span></tt> content types directly using a <tt class="docutils literal"><span class="pre">URL</span></tt> suffix:</p>
@@ -1061,46 +1065,20 @@ representers so that the client can address representations of different
 <col width="42%" />
 <col width="31%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head"><p class="first last"><strong>View Name</strong></p>
-</th>
-<th class="head"><p class="first last"><strong>MIME Type</strong></p>
-</th>
-<th class="head"><p class="first last"><strong>URL Suffix</strong></p>
-</th>
-</tr>
-</thead>
 <tbody valign="top">
-<tr class="row-even"><td><p class="first last">csv</p>
+<tr class="row-odd"><td><p class="first last"><strong>View Name</strong></p>
 </td>
-<td><p class="first last">application/csv</p>
+<td><p class="first last"><strong>MIME Type</strong></p>
 </td>
-<td><p class="first last">/&#64;&#64;csv</p>
-</td>
-</tr>
-<tr class="row-odd"><td><p class="first last">json</p>
-</td>
-<td><p class="first last">application/json</p>
-</td>
-<td><p class="first last">/&#64;&#64;json</p>
-</td>
-</tr>
-<tr class="row-even"><td><p class="first last">xml</p>
-</td>
-<td><p class="first last">application/xml</p>
-</td>
-<td><p class="first last">/&#64;&#64;xml</p>
-</td>
-</tr>
-<tr class="row-odd"><td><p class="first last">atom</p>
-</td>
-<td><p class="first last">application/xml+atom</p>
-</td>
-<td><p class="first last">/&#64;&#64;atom</p>
+<td><p class="first last"><strong>URL Suffix</strong></p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>csv           application/csv      /&#64;&#64;csv</p>
+<p>json          application/json     /&#64;&#64;json</p>
+<p>xml           application/xml      /&#64;&#64;xml</p>
+<p>atom          application/xml+atom /&#64;&#64;atom</p>
 </li>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">default_content_type</span></tt> option determines the <tt class="docutils literal"><span class="pre">MIME</span></tt> type of the
 representation returned in the response when the client does not indicate a
@@ -1109,8 +1087,8 @@ preference.</p>
 </ul>
 <p>There is only one difference between the three custom <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> view
 directives: When a resource interface is used as value for the <tt class="docutils literal"><span class="pre">for_</span></tt> option
-in the <tt class="docutils literal"><span class="pre">resource_view</span></tt> declaration, the specified view is registered for
-both the associated member and collection resource classes whereas in the
+in the <tt class="docutils literal"><span class="pre">resource_view</span></tt> declaration, the specified view is registered for both
+the associated member and collection resource classes whereas in the
 <tt class="docutils literal"><span class="pre">collection_view</span></tt> and the <tt class="docutils literal"><span class="pre">member_view</span></tt> directives the view is only
 registered for the collection resource class and member resource class,
 respectively.</p>
@@ -1118,8 +1096,8 @@ respectively.</p>
 </div>
 <div class="section" id="running-the-application">
 <h2>5. Running the application<a class="headerlink" href="#running-the-application" title="Permalink to this headline">¶</a></h2>
-<p>To see our little application in action, we first need to check out the
-latest sources for the <tt class="xref py py-mod docutils literal"><span class="pre">everest-demo</span></tt> project from github:</p>
+<p>To see our little application in action, we first need to check out the latest
+sources for the <tt class="xref py py-mod docutils literal"><span class="pre">everest-demo</span></tt> project from github:</p>
 <div class="highlight-text"><div class="highlight"><pre>$ git clone https://github.com/cenix/everest-demo.git
 </pre></div>
 </div>
@@ -1199,9 +1177,9 @@ the <tt class="docutils literal"><span class="pre">URL</span></tt> <tt class="do
 <p>With the application running, we now turn our attention to persistency.
 <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses a <a class="reference internal" href="glossary.html#term-repository"><em class="xref std std-term">repository</em></a> to load and save resources from and to
 a storage backend.</p>
-<p>By default, <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses a non-persisting memory repository as
-resource repository. With the following <tt class="docutils literal"><span class="pre">ZCML</span></tt> declaration, a
-filesystem-based repository is used as the default for our application:</p>
+<p>By default, <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> uses a non-persisting memory repository as resource
+repository. With the following <tt class="docutils literal"><span class="pre">ZCML</span></tt> declaration, a filesystem-based
+repository is used as the default for our application:</p>
 <div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;filesystem_repository</span>
    <span class="na">directory=</span><span class="s">&quot;data&quot;</span>
    <span class="na">content_type=</span><span class="s">&quot;everest.mime.CsvMime&quot;</span>
@@ -1209,9 +1187,9 @@ filesystem-based repository is used as the default for our application:</p>
 </pre></div>
 </div>
 <p>This tells <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt> to use the <tt class="docutils literal"><span class="pre">data</span></tt> directory (relative to the
-deployment directory) to persist representations of the root collections of
-all resources as <tt class="docutils literal"><span class="pre">.csv</span></tt> (Comma Separated Value) files. When the application
-is initialized, the root collections are loaded from these representation files
+deployment directory) to persist representations of the root collections of all
+resources as <tt class="docutils literal"><span class="pre">.csv</span></tt> (Comma Separated Value) files. When the application is
+initialized, the root collections are loaded from these representation files
 and during each <tt class="docutils literal"><span class="pre">commit</span></tt> operation at the end of a transaction, all modified
 root collections are written back to their corresponding representation files.</p>
 <p>The filesystem-based repository does not perform well with complex or high
