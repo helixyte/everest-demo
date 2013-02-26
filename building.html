@@ -1065,20 +1065,46 @@ representers so that the client can address representations of different
 <col width="42%" />
 <col width="31%" />
 </colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><p class="first last"><strong>View Name</strong></p>
+</th>
+<th class="head"><p class="first last"><strong>MIME Type</strong></p>
+</th>
+<th class="head"><p class="first last"><strong>URL Suffix</strong></p>
+</th>
+</tr>
+</thead>
 <tbody valign="top">
-<tr class="row-odd"><td><p class="first last"><strong>View Name</strong></p>
+<tr class="row-even"><td><p class="first last">csv</p>
 </td>
-<td><p class="first last"><strong>MIME Type</strong></p>
+<td><p class="first last">application/csv</p>
 </td>
-<td><p class="first last"><strong>URL Suffix</strong></p>
+<td><p class="first last">/&#64;&#64;csv</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last">json</p>
+</td>
+<td><p class="first last">application/json</p>
+</td>
+<td><p class="first last">/&#64;&#64;json</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last">xml</p>
+</td>
+<td><p class="first last">application/xml</p>
+</td>
+<td><p class="first last">/&#64;&#64;xml</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p class="first last">atom</p>
+</td>
+<td><p class="first last">application/xml+atom</p>
+</td>
+<td><p class="first last">/&#64;&#64;atom</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>csv           application/csv      /&#64;&#64;csv</p>
-<p>json          application/json     /&#64;&#64;json</p>
-<p>xml           application/xml      /&#64;&#64;xml</p>
-<p>atom          application/xml+atom /&#64;&#64;atom</p>
 </li>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">default_content_type</span></tt> option determines the <tt class="docutils literal"><span class="pre">MIME</span></tt> type of the
 representation returned in the response when the client does not indicate a

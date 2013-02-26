@@ -349,11 +349,8 @@ the latter except for the following differences:
   ``MIME`` content types directly using a ``URL`` suffix:
 
   ============= ==================== ===============
-
   **View Name**     **MIME Type**     **URL Suffix**
-
   ============= ==================== ===============
-
   csv           application/csv      /@@csv
 
   json          application/json     /@@json
@@ -361,9 +358,7 @@ the latter except for the following differences:
   xml           application/xml      /@@xml
 
   atom          application/xml+atom /@@atom
-
   ============= ==================== ===============
-
 * The ``default_content_type`` option determines the ``MIME`` type of the
   representation returned in the response when the client does not indicate a
   preference.

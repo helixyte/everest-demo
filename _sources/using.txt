@@ -216,6 +216,10 @@ attribute names to reference nested branches:
            value="project_name" />
    </attribute>
 
+This feature is very useful for assigning meaningful field names to nested
+attributes in ``CSV`` representations (by default, the ``CSV`` representer will
+use the full dotted attribute name as field name, i.e., ``projects.name`` in
+the example above).
 
 .. _using-different-mime-content-types:
 
