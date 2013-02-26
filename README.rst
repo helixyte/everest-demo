@@ -22,17 +22,17 @@ for ``everest``;
 
 3. Install the demo app:
 
-``$ cd everest-demo
+::
 
-pip install -e .
+  $ cd everest-demo pip install -e .
 
-$ cd webapps/plantscribe
+  $ cd webapps/plantscribe
 
-$ cp -R ~/git/everest-demo/schemata .
+  $ cp -R ~/git/everest-demo/schemata .
 
-$ cp -R ~/git/everest-demo/plantscribe.ini .
+  $ cp -R ~/git/everest-demo/plantscribe.ini .
 
-$ cp -R ~/git/everest-demo/plantscribe/tests/data .``
+  $ cp -R ~/git/everest-demo/plantscribe/tests/data .
 
 4. Start the application:
 
