@@ -119,8 +119,10 @@
   
   <div class="section" id="building-everest-applications">
 <h1>Building <em>everest</em> applications<a class="headerlink" href="#building-everest-applications" title="Permalink to this headline">¶</a></h1>
-<p>In this section, you will find a step-by-step guide on how to build a
-<a href="#id1"><span class="problematic" id="id2">``</span></a>REST``ful application with <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>.</p>
+<p>In this section, you will find a step-by-step guide on how to build a RESTful
+application with <tt class="xref py py-mod docutils literal"><span class="pre">everest</span></tt>. If you are too impatient to go through the
+theory behind <tt class="docutils literal"><span class="pre">everest</span></tt> and just want to see the sample application in
+action, you can jump straight to <a class="reference internal" href="#running-the-application"><em>here</em></a>.</p>
 <div class="section" id="the-application">
 <h2>1. The application<a class="headerlink" href="#the-application" title="Permalink to this headline">¶</a></h2>
 <p>Suppose you want to write a program that helps a garden designer with composing
@@ -1061,9 +1063,9 @@ representers so that the client can address representations of different
 <tt class="docutils literal"><span class="pre">MIME</span></tt> content types directly using a <tt class="docutils literal"><span class="pre">URL</span></tt> suffix:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="27%" />
-<col width="42%" />
-<col width="31%" />
+<col width="44%" />
+<col width="32%" />
+<col width="24%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head"><p class="first last"><strong>View Name</strong></p>
@@ -1121,7 +1123,7 @@ respectively.</p>
 </div>
 </div>
 <div class="section" id="running-the-application">
-<h2>5. Running the application<a class="headerlink" href="#running-the-application" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>5. Running the application<a class="headerlink" href="#running-the-application" title="Permalink to this headline">¶</a></h2>
 <p>To see our little application in action, we first need to check out the latest
 sources for the <tt class="xref py py-mod docutils literal"><span class="pre">everest-demo</span></tt> project from github:</p>
 <div class="highlight-text"><div class="highlight"><pre>$ git clone https://github.com/cenix/everest-demo.git
@@ -1131,7 +1133,7 @@ sources for the <tt class="xref py py-mod docutils literal"><span class="pre">ev
 <div class="highlight-text"><div class="highlight"><pre>$ pip install -e .
 </pre></div>
 </div>
-<p>inside the root folder of the <tt class="docutils literal"><span class="pre">everest-demo</span></tt> project <a class="footnote-reference" href="#f1" id="id3">[1]</a> .</p>
+<p>inside the root folder of the <tt class="docutils literal"><span class="pre">everest-demo</span></tt> project <a class="footnote-reference" href="#f1" id="id2">[1]</a> .</p>
 <p>Next, set up a deployment folder of your liking, e.g.</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cd
 $ mkdir webapps
@@ -1139,7 +1141,7 @@ $ mkdir webapps/plantscribe
 </pre></div>
 </div>
 <p>and populate it with the following files from the <tt class="docutils literal"><span class="pre">everest-demo</span></tt> project
-folder <a class="footnote-reference" href="#f2" id="id4">[2]</a> :</p>
+folder <a class="footnote-reference" href="#f2" id="id3">[2]</a> :</p>
 <div class="highlight-text"><div class="highlight"><pre>$ cd webapps/plantscribe
 $ cp -R ~/git/everest-demo/schemata .
 $ cp -R ~/git/everest-demo/plantscribe.ini .
@@ -1393,14 +1395,14 @@ only be assigned to one repository.</p>
 <table class="docutils footnote" frame="void" id="f1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td>If you use <tt class="docutils literal"><span class="pre">easy_install</span></tt> as your package manager, the equivalent
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>If you use <tt class="docutils literal"><span class="pre">easy_install</span></tt> as your package manager, the equivalent
 invocation would be &#8220;<tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">develop</span> <span class="pre">.</span></tt>&#8221;.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[2]</a></td><td>This step will eventually be automated with a paste script.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td>This step will eventually be automated with a paste script.</td></tr>
 </tbody>
 </table>
 </div>
