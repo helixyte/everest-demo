@@ -10,7 +10,7 @@ For the impatient: Getting the Demo application up and running
 ==============================================================
 
 If you just want to play with an ``everest`` application without having to go
-through , do the following:
+through boring background information, do the following:
 
 1. Follow the
 `installation instructions <https://github.com/cenix/everest#installation>`_
