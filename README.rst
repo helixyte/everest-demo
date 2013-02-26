@@ -1,6 +1,10 @@
 everest-demo
 ============
 
-Demonstrates how to build ``everest`` REST applications.
+Tutorial and sample application demonstrating how to build RESTful applications
+with ``everest``.
 
-See `http://cenix.github.com/everest-demo`.
+Please follow the
+`installation instructions <https://github.com/cenix/everest#installation>`_
+for ``everest`` and then look `here <http://cenix.github.com/everest-demo`_ for
+the tutorial.

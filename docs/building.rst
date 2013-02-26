@@ -1,9 +1,10 @@
 Building *everest* applications
 ===============================
 
-In this section, you will find a step-by-step guide on how to build a
-``REST``ful application with :mod:`everest`.
-
+In this section, you will find a step-by-step guide on how to build a RESTful
+application with :mod:`everest`. If you are too impatient to go through the
+theory behind ``everest`` and just want to see the sample application in
+action, you can jump straight to :ref:`here <running-the-application>`.
 
 1. The application
 ------------------
@@ -348,17 +349,18 @@ the latter except for the following differences:
   representers so that the client can address representations of different
   ``MIME`` content types directly using a ``URL`` suffix:
 
-  ============= ==================== ===============
-  **View Name**     **MIME Type**     **URL Suffix**
-  ============= ==================== ===============
-  csv           application/csv      /@@csv
+  ============================ ==================== ===============
+  **View Name**                **MIME Type**        **URL Suffix**
+  ============================ ==================== ===============
+  csv                          application/csv      /@@csv
 
-  json          application/json     /@@json
+  json                         application/json     /@@json
 
-  xml           application/xml      /@@xml
+  xml                          application/xml      /@@xml
 
-  atom          application/xml+atom /@@atom
-  ============= ==================== ===============
+  atom                         application/xml+atom /@@atom
+  ============================ ==================== ===============
+
 * The ``default_content_type`` option determines the ``MIME`` type of the
   representation returned in the response when the client does not indicate a
   preference.
@@ -371,6 +373,7 @@ the associated member and collection resource classes whereas in the
 registered for the collection resource class and member resource class,
 respectively.
 
+.. _running-the-application:
 
 5. Running the application
 --------------------------
