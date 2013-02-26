@@ -24,7 +24,9 @@ for ``everest``;
 
 ::
 
-  $ cd everest-demo pip install -e .
+  $ cd everest-demo
+
+  pip install -e .
 
   $ cd webapps/plantscribe
 
