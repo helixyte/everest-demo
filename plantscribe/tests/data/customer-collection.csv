@@ -1,3 +1,4 @@
-"first_name","last_name","id"
-"Sally","Doe",0
-"Peter","Smith",1
+"id","first_name","last_name"
+1,"Peter","Smith"
+2,"Nancy","Green"
+3,"Olivia M.","Potter-Dupiers"

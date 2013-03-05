@@ -36,16 +36,16 @@ class _PlantScribeResourcesBaseTestCase(ResourceTestCase):
     ini_section_name = 'app:plantscribe'
     def test_get_customer(self):
         coll = get_root_collection(ICustomer)
-        self.assert_equal(len(coll), 2)
+        self.assert_equal(len(coll), 3)
         mb = coll.get('smith-peter')
         self.assert_true(isinstance(mb, CustomerMember))
         self.assert_equal(mb.first_name, 'Peter')
         self.assert_equal(mb.last_name, 'Smith')
-        self.assert_equal(len(mb.projects), 2)
+        self.assert_equal(len(mb.projects), 3)
 
     def test_get_project(self):
         coll = get_root_collection(IProject)
-        self.assert_equal(len(coll), 2)
+        self.assert_equal(len(coll), 7)
         mb = coll.get('pond')
         self.assert_true(isinstance(mb, ProjectMember))
         self.assert_equal(mb.name, 'Pond')
