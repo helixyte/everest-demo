@@ -63,11 +63,6 @@
                         FAKE_PUT
                         DELETE" />
 
-    <member_view
-        for="plantscribe.interfaces.ISite
-             "
-        request_method="GET" />
-
     <!-- Public folder for static content (e.g., for XML schemata). -->
     <view
         context="everest.resources.interfaces.IService"
