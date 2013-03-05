@@ -42,6 +42,7 @@
         for="plantscribe.interfaces.ICustomer
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
+             plantscribe.interfaces.ISite
             "
         request_method="GET" />
 
@@ -49,6 +50,7 @@
         for="plantscribe.interfaces.ICustomer
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
+             plantscribe.interfaces.ISite
             "
         request_method="POST" />
 

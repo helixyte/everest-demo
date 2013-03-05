@@ -2,7 +2,7 @@ from everest.entities.base import Entity
 from everest.entities.utils import slug_from_string
 
 class Site(Entity):
-    def __init__(self, name, project, **kw):
+    def __init__(self, name, project=None, **kw):
         Entity.__init__(self, **kw)
         self.name = name
         self.project = project
