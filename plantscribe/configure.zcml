@@ -58,6 +58,7 @@
         for="plantscribe.interfaces.ICustomer
              plantscribe.interfaces.IProject
              plantscribe.interfaces.ISpecies
+             plantscribe.interfaces.ISite
             "
         request_method="PUT
                         FAKE_PUT
