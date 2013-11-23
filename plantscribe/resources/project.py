@@ -11,4 +11,4 @@ class ProjectMember(Member):
     title = attribute_alias('name')
     name = terminal_attribute(str, 'name')
     customer = member_attribute(ICustomer, 'customer')
-    sites = collection_attribute(ISite, backref='project', is_nested=True)
+    sites = collection_attribute(ISite, backref='project')

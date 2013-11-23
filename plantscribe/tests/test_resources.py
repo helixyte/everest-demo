@@ -6,12 +6,11 @@ Created on Jan 9, 2012.
 """
 from StringIO import StringIO
 from everest.mime import CsvMime
-from everest.repositories.constants import REPOSITORY_TYPES
 from everest.resources.io import dump_resource
+from everest.resources.io import load_into_collection_from_url
 from everest.resources.utils import get_collection_class
 from everest.resources.utils import get_root_collection
 from everest.testing import ResourceTestCase
-from everest.utils import get_repository_manager
 from pkg_resources import resource_filename # pylint: disable=E0611
 from plantscribe.interfaces import ICustomer
 from plantscribe.interfaces import IIncidence
@@ -89,8 +88,6 @@ class PlantScribeResourcesOrmTestCase(_PlantScribeResourcesBaseTestCase):
     def set_up(self):
         _PlantScribeResourcesBaseTestCase.set_up(self)
         #
-        repo_mgr = get_repository_manager()
-        repo = repo_mgr.get(REPOSITORY_TYPES.RDB)
         data_dir = os.path.join(os.path.dirname(__file__), 'data')
         for coll_name, coll_cls in \
                 (('customer', get_collection_class(ICustomer)),
@@ -101,5 +98,6 @@ class PlantScribeResourcesOrmTestCase(_PlantScribeResourcesBaseTestCase):
                  ):
             url = 'file://%s' % os.path.join(data_dir,
                                              '%s-collection.csv' % coll_name)
-            repo.load_representation(coll_cls, url,
-                                     content_type=CsvMime, resolve_urls=True)
+            coll = get_root_collection(coll_cls)
+            load_into_collection_from_url(coll, url,
+                                          content_type=CsvMime)

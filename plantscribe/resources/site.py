@@ -10,6 +10,5 @@ class SiteMember(Member):
     relation = 'http://plantscribe.org/relations/site'
     title = attribute_alias('name')
     name = terminal_attribute(str, 'name')
-    incidences = collection_attribute(IIncidence, backref='site',
-                                      is_nested=True)
+    incidences = collection_attribute(IIncidence, backref='site')
     project = member_attribute(IProject, 'project')
